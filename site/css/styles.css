@@ -1,0 +1,376 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Базовые стили для мобильных устройств */
+html, body {
+    font-family: Montserrat;
+    font-weight: 800;
+    font-size: 14px;
+    background: #2D2D2D;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+.header {
+    margin-top: 10%;
+    margin-bottom: 10%;
+    padding: 10%;
+    display: flex;
+    justify-content: end;
+    flex-direction: row;
+    gap: 11px;
+}
+
+.headerbutton {
+    border-style: none;
+    border-radius: 15px;
+    font-family: Montserrat;
+    font-weight: 800;
+    font-size: 14px;
+    color: #fff;
+    background-color: #00D9FF;
+    height: 40px;
+    width: auto;
+    padding: 10px;
+    transition: transform 0.5s ease;
+}
+
+.container {
+    padding: 10%;
+    margin-bottom: 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+}
+.container p {
+    color: white;
+    margin: 0;
+}
+  
+.footer {
+    color: #fff;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
+.linkblock {
+    background-color: #848484;
+    width: 300px;
+    height: 150px;
+    border-radius: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+#repo-link {
+    font-family: Montserrat;
+    font-weight: 800;
+    font-size: 14px;
+    
+    width: 252px;
+    height: 50px;
+    border-radius: 25px;
+    border-style: none;
+    padding-left: 10px;
+}
+
+#readmdbutton {
+    width: 150px;
+    height: 40px;
+    border-style: none;
+    border-radius: 25px;
+    font-family: Montserrat;
+    font-weight: 800;
+    font-size: 14px;
+    color: #fff;
+    background-color: #00D9FF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+    transition: transform 0.5s ease;
+
+}
+#uploadmdbutton {
+    width: 150px;
+    height: 40px;
+    border-style: none;
+    border-radius: 25px;
+    font-family: Montserrat;
+    font-weight: 800;
+    font-size: 14px;
+    color: #fff;
+    background-color: #00D9FF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+    transition: transform 0.5s ease;
+
+}
+button:hover{
+    background-color: #04b0ce;
+ }
+ #readmdbutton:hover{
+     background-color: #04b0ce;
+ }
+ #uploadmdbutton:hover{
+     background-color: #04b0ce;
+ }
+
+ button:active{
+     transform: scale(1.1);
+ }
+ #readmdbutton:active{
+     transform: scale(1.1);
+ }
+  #uploadmdbutton:active{
+     transform: scale(1.1);
+ }
+
+
+  /* Стили для планшетов (min-width: 768px) */
+@media (min-width: 768px) {
+    html, body {
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        background: #2D2D2D;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      
+    .header {
+        margin-top: 10%;
+        margin-bottom: 10%;
+        padding: 0 10% 0 10%;
+        display: flex;
+        justify-content: end;
+        flex-direction: row;
+        gap: 13px;
+    }
+    
+    .headerbutton {
+        border-style: none;
+        border-radius: 15px;
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        color: #fff;
+        background-color: #00D9FF;
+        height: 55px;
+        width: auto;
+        padding: 20px;
+    }
+    
+    .container {
+        padding: 10%;
+        margin-bottom: 25%;
+        display: flex;
+        flex-direction: column;
+        gap: 21px;
+        align-items: center;
+    }
+    .container p {
+        color: white;
+        margin: 0;
+    }
+      
+    .footer {
+        color: #fff;
+        text-align: center;
+        margin-top: auto;
+        margin-bottom: 0;
+        font-size: 20px;
+    }
+    
+    .linkblock {
+        background-color: #848484;
+        width: 400px;
+        height: 200px;
+        border-radius: 45px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+    }
+    
+    #repo-link {
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        
+        width: 340px;
+        height: 68px;
+        border-radius: 25px;
+        border-style: none;
+        padding-left: 10px;
+    }
+    
+    #readmdbutton {
+        width: 200px;
+        height: 55px;
+        border-style: none;
+        border-radius: 25px;
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        color: #fff;
+        background-color: #00D9FF;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+    
+    }
+    #uploadmdbutton {
+        width: 200px;
+        height: 55px;
+        border-style: none;
+        border-radius: 25px;
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        color: #fff;
+        background-color: #00D9FF;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+    
+    }
+  }
+  
+  /* Стили для десктопов (min-width: 1024px) */
+  @media (min-width: 1024px) {
+    html, body {
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        background: #2D2D2D;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      
+    .header {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        padding: 0 10% 0 10%;
+        display: flex;
+        justify-content: end;
+        flex-direction: row;
+        gap: 13px;
+    }
+    
+    .headerbutton {
+        border-style: none;
+        border-radius: 15px;
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        color: #fff;
+        background-color: #00D9FF;
+        height: 55px; /* Высота кнопки */
+        width: auto;
+        padding: 0 20px; /* Убираем вертикальный padding, так как используем line-height */
+        transition: transform 0.5s ease;
+        text-align: center; /* Горизонтальное выравнивание */
+        line-height: 55px; /* Вертикальное выравнивание (равно высоте кнопки) */
+      }
+    
+    .container {
+        padding: 1%;
+        margin-bottom: 5%;
+        display: flex;
+        flex-direction: column;
+        gap: 21px;
+        align-items: center;
+    }
+    .container p {
+        color: white;
+        margin: 0;
+    }
+      
+    .footer {
+        color: #fff;
+        text-align: center;
+        margin-top: auto;
+        margin-bottom: 0;
+        font-size: 20px;
+    }
+    
+    .linkblock {
+        background-color: #848484;
+        width: 800px;
+        height: 200px;
+        border-radius: 45px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+    }
+    
+    #repo-link {
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        
+        width: 700px;
+        height: 68px;
+        border-radius: 25px;
+        border-style: none;
+        padding-left: 10px;
+    }
+    
+    #readmdbutton {
+        width: 400px;
+        height: 55px;
+        border-style: none;
+        border-radius: 25px;
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        color: #fff;
+        background-color: #00D9FF;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+        transition: transform 0.5s ease;
+    }
+    #uploadmdbutton {
+        width: 400px;
+        height: 55px;
+        border-style: none;
+        border-radius: 25px;
+        font-family: Montserrat;
+        font-weight: 800;
+        font-size: 20px;
+        color: #fff;
+        background-color: #00D9FF;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+        transition: transform 0.5s ease;
+    
+    }
+
+    button:hover{
+       background-color: #04b0ce;
+    }
+    #readmdbutton:hover{
+        background-color: #04b0ce;
+    }
+    #uploadmdbutton:hover{
+        background-color: #04b0ce;
+    }
+
+    button:active{
+        transform: scale(1.1);
+    }
+    #readmdbutton:active{
+        transform: scale(1.1);
+    }
+     #uploadmdbutton:active{
+        transform: scale(1.1);
+    }
+  }
