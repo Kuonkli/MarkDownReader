@@ -1,12 +1,16 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainPageComponent from "./components/MainPageComponent";
 import FileComponent from "./components/FileComponent";
-import './App.css';
 
-
-function App() {
+const App = () => {
     return (
-        <div className="App">
-            <FileComponent />
-        </div>
+        <Router>
+            <Routes>
+                <Route path="/" element={<MainPageComponent />} />
+                <Route path="/file" element={<FileComponent />} />
+            </Routes>
+        </Router>
     );
 }
 

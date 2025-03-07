@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const authService = {
+const AuthService = {
     clearTokens: () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
@@ -27,4 +27,4 @@ const authService = {
     },
 };
 
-export default authService;
+export default AuthService;
