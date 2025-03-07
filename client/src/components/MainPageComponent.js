@@ -1,44 +1,51 @@
-import React, { Component } from "react";
-import { marked } from 'marked';
+import React, { Component } from 'react';
 
-class FileComponent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            htmlContent: '',
-        };
-    }
+import "../css/MainPageComponent.css"
 
-    async componentDidMount() {
-        await this.fetchFiles(`https://github.com/Flowseal/zapret-discord-youtube`)
-    }
-
-    fetchFiles = async(url) => {
-        const apiUrl = url.replace("https://github.com", "https://api.github.com/repos") + "/contents";
-        const response = await fetch(apiUrl);
-        if (response.ok) {
-            const files = await response.json();
-            const mdFiles = files.filter(file => file.name.endsWith('.md'));
-            for (const mdFile of mdFiles) {
-                const fileResponse = await fetch(mdFile.download_url);
-                const fileContent = await fileResponse.text();
-                const htmlContent = marked(fileContent);
-                this.setState({
-                    htmlContent: htmlContent,
-                })
-            }
-        } else {
-            console.error("Failed to fetch repository contents");
-        }
-    }
-
-    render() {
+class MainPageComponent extends Component {
+    render () {
         return (
-            <div
-                dangerouslySetInnerHTML={{__html: this.state.htmlContent}}
-            />
-        )
-    }
-}
+            <div>
+                <header className="header">
+                    <div>
+                        <button className="headerbutton" id="login">
+                            Login
+                        </button>
+                        <button className="headerbutton" id = "register">
+                            Register
+                        </button>
+                    </div>
+                </header>
 
-export default FileComponent;
+                <main className="main">
+                    <div className="container">
+                        <div className="linkblock">
+                            <div className="pastelinkarea">
+                                <input type="text" id="repo-link" placeholder="Paste your repo link..."/>
+                            </div>
+                            <div className="readmdbutton">
+                                <button id = "readmdbutton">
+                                    READ MD
+                                </button>
+                            </div>
+                        </div>
+                        <p>OR</p>
+                        <div className="uploadmdbutton">
+                            <button id = "uploadmdbutton">
+                                UPLOAD MD
+                            </button>
+                        </div>
+                    </div>
+                </main>
+
+                <footer className="footer">
+                    <p>&copy; All rights reserved</p>
+                </footer>
+            </div>
+
+
+        );
+    }
+};
+
+export default MainPageComponent;

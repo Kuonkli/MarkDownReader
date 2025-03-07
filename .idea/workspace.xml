@@ -5,20 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09ec2eca-fc91-42f7-abec-e508979de565" name="Changes" comment="minor changes">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/08f96263-60a5-4f64-aea3-e64806da19ff.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/08f96263-60a5-4f64-aea3-e64806da19ff/storage_v2/_src_/database/markdown-reader.YSuL_Q.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/08f96263-60a5-4f64-aea3-e64806da19ff/storage_v2/_src_/database/markdown-reader.YSuL_Q/schema/public.abK9xQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/db.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/models.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/site/css/reset.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/site/css/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/site/js/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/site/pages/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/site/partials/footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/site/partials/header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/MarkDownReader.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MarkDownReader.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +56,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "Merging main",
     "go.import.settings.migrated": "true",
     "last_opened_file_path": "//wsl$/Ubuntu-24.04/home/artem/GoProjects/MarkDownReader",
     "node.js.detected.package.eslint": "true",
