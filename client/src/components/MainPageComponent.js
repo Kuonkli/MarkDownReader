@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/MainPageComponent.css";
 
 const MainPageComponent = () => {
     const navigate = useNavigate();
-    const [repoLink, setRepoLink] = useState(""); // Состояние для ссылки из инпута
-    const [error, setError] = useState(""); // Состояние для ошибок
+    const [repoLink, setRepoLink] = useState(""); // Ссылка на репозиторий
+    const [error, setError] = useState(""); // Ошибки
 
     const fetchFiles = async () => {
         try {
@@ -27,10 +27,15 @@ const MainPageComponent = () => {
                     return;
                 }
 
-                const mdFile = mdFiles[0];
-                const fileResponse = await fetch(mdFile.download_url);
-                const fileContent = await fileResponse.text();
-                navigate("/file", { state: { content: fileContent } });
+                const contents = await Promise.all(
+                    mdFiles.map(async (mdFile) => {
+                        const fileResponse = await fetch(mdFile.download_url);
+                        const fileContent = await fileResponse.text();
+                        return { name: mdFile.name, content: fileContent };
+                    })
+                );
+
+                navigate("/file", { state: { files: contents } }); // Передаём массив файлов
             } else {
                 setError("Failed to fetch repository contents. Please check the URL.");
             }
@@ -41,14 +46,21 @@ const MainPageComponent = () => {
     };
 
     const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const fileContent = reader.result;
-                navigate("/file", { state: { content: fileContent } });
-            };
-            reader.readAsText(file);
+        const files = Array.from(event.target.files); // Получаем список загруженных файлов
+        if (files.length > 0) {
+            const readerPromises = files.map((file) => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        resolve({ name: file.name, content: reader.result });
+                    };
+                    reader.readAsText(file);
+                });
+            });
+
+            Promise.all(readerPromises).then((contents) => {
+                navigate("/file", { state: { files: contents } });
+            });
         }
     };
 
@@ -74,17 +86,21 @@ const MainPageComponent = () => {
                                 type="text"
                                 id="repo-link"
                                 value={repoLink}
-                                onChange={(e) => {setRepoLink(e.target.value); setError("")}} // Сохраняем введённую ссылку
+                                onChange={(e) => {
+                                    setRepoLink(e.target.value);
+                                    setError("");
+                                }}
                                 placeholder="Paste your repo link..."
                             />
                         </div>
                         <div className="readmdbutton">
-                            <button id="readmdbutton" onClick={fetchFiles}>READ MD</button>
+                            <button id="readmdbutton" onClick={fetchFiles}>
+                                READ MD
+                            </button>
                         </div>
                     </div>
                     <p>OR</p>
                     <div className="uploadmdbutton">
-                        {/* Привязываем input file к кнопке */}
                         <button
                             id="uploadmdbutton"
                             onClick={() => document.getElementById("file-input").click()}
@@ -96,6 +112,7 @@ const MainPageComponent = () => {
                             id="file-input"
                             style={{ display: "none" }}
                             accept=".md"
+                            multiple // Позволяем выбирать несколько файлов
                             onChange={handleFileUpload}
                         />
                     </div>

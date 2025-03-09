@@ -4,6 +4,7 @@
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    color: #333333;
 }
 
 .markdown-box {
@@ -11,7 +12,7 @@
     max-width: 900px;
     min-height: 300px;
     background-color: #ffffff;
-    border: 1px solid #ddd;
+    border: 2px solid #04b0ce;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -19,5 +20,34 @@
     font-family: "Arial", sans-serif;
     font-size: 16px;
     line-height: 1.6;
-    color: #333;
+    color: #333333;
+    --text-color: #333333;
+}
+
+.file-name {
+    color: #ffffff;
+}
+
+h2 {
+    border-bottom: 1px solid lightgray;
+}
+
+blockquote {
+    border-left: 5px solid #04b0ce;
+    margin: 1vw 0;
+    padding: 1vw 3vw;
+}
+
+pre {
+    background: lightgray;
+    padding: 4px 6px;
+}
+
+code {
+    font-family: "Fira Code", Consolas, monospace; /* Современный шрифт для кода */
+    color: #444;
+    border-radius: 5px;
+    display: inline-block;
+    background: lightgray;
+    padding: 1px;
 }
