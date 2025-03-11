@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { marked } from "marked";
-import "../css/FileComponent.css";
+import "../css/FilePageStyles.css";
 
 const FileComponent = () => {
     const [files, setFiles] = useState([]);
@@ -39,7 +39,7 @@ const FileComponent = () => {
     }, [location.state]);
 
     return (
-        <div className="container">
+        <div className="file-container">
             {files.map((file, index) => (
                 <div>
                     <h3 className={"file-name"}>{file.name}</h3>
