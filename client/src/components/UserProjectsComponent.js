@@ -24,15 +24,14 @@ const UserProjectsComponent = (callback, deps) => {
                 console.log(files);
                 setProjects(files.files);
                 console.log(projects)
+            } else if (response.status === 401) {
+                await AuthService.refreshToken();
+                return fetchProjects(url)
             } else {
                 throw new Error("Invalid response data format");
             }
         } catch (error) {
             console.error("Error while fetching projects:", error);
-            if (error.response && error.response.status === 401) {
-                await AuthService.refreshToken();
-                return fetchProjects(url);
-            }
         }
     }, [])
 
