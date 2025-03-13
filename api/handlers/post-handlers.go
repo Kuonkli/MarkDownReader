@@ -35,6 +35,14 @@ func PostMDFileHandler(c *gin.Context) {
 		return
 	}
 
+	if extension := filepath.Ext(file.Filename); extension != ".md" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "invalid file extension",
+			"details": fmt.Sprintf("file extension is %s", extension),
+		})
+		return
+	}
+
 	fileName := c.PostForm("filename")
 	if fileName == "" {
 		fileName = generateRandomFileName("mdproject", userID)

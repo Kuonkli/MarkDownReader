@@ -30,13 +30,6 @@ func UpdateFileNameHandler(c *gin.Context) {
 		return
 	}
 
-	var count int64
-	db.DB.Model(&models.MarkdownFile{}).Where("filename = ?", requestBody.NewFilename).Count(&count)
-	if count > 0 {
-		c.JSON(http.StatusConflict, gin.H{"error": "filename already exists"})
-		return
-	}
-
 	var markdownFile models.MarkdownFile
 	if err := db.DB.Where("id = ? AND user_id = ?", requestBody.FileId, userId).First(&markdownFile).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -44,6 +37,13 @@ func UpdateFileNameHandler(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch file", "details": err.Error()})
+		return
+	}
+
+	var count int64
+	db.DB.Model(&models.MarkdownFile{}).Where("filename = ?", requestBody.NewFilename).Count(&count)
+	if count > 0 {
+		c.JSON(http.StatusConflict, gin.H{"error": "filename already exists"})
 		return
 	}
 

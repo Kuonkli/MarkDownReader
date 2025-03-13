@@ -38,6 +38,18 @@ func SignUp(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request payload"})
 		return
 	}
+	if len(req.Password) > 72 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "password is too long"})
+		return
+	}
+	if len(req.Nickname) >= 200 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "nickname is too long"})
+		return
+	}
+	if len(req.Email) >= 200 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "email is too long"})
+		return
+	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
