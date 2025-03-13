@@ -130,41 +130,38 @@ const MainPageComponent = () => {
     };
 
     return (
-        <div>
+        <div className="container">
             <header className="main-page-header">
-                <div>
                     <button
                         className="header-button"
                         id="login"
                         onClick={() => toggleAuthVisibility(true)}>
-                        Login
+                        login
                     </button>
                     <button
                         className="header-button"
                         id="register"
                         onClick={() => toggleAuthVisibility(false)}>
-                        Register
+                        register
                     </button>
-                </div>
             </header>
 
             <main className="main">
                 {AuthVisibility ?
                     (
-                        <div className={"auth-window"}>
-                            <div id={"auth-overlay"}  className={"auth-overlay"} onClick={(e) => {
-                                if (e.target === document.getElementById("auth-overlay")) {
-                                    setAuthVisibility(false);
-                                }
-                            }}/>
+                        <div id={"auth-overlay"} className={"auth-overlay"} onClick={(e) => {
+                            if (e.target === document.getElementById("auth-overlay")) {
+                                setAuthVisibility(false);
+                            }
+                        }}>
                             <div className="auth-container">
-                                <h2>{isLogin ? "Авторизация" : "Регистрация"}</h2>
+                                <h2>{isLogin ? "auth" : "registration"}</h2>
                                 {authError && <p className={"error-message"}>{authError}</p>}
                                 <form onSubmit={handleAuthSubmit}>
                                     {!isLogin && (
                                         <>
                                             <div className="form-group">
-                                                <label htmlFor="nickname">Имя аккаунта:</label>
+                                                <label htmlFor="nickname">nickname:</label>
                                                 <input
                                                     type="text"
                                                     id="nickname"
@@ -177,7 +174,7 @@ const MainPageComponent = () => {
                                         </>
                                     )}
                                     <div className="form-group">
-                                        <label htmlFor="email">Email:</label>
+                                        <label htmlFor="email">email:</label>
                                         <input
                                             type="email"
                                             id="email"
@@ -188,7 +185,7 @@ const MainPageComponent = () => {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="password">Пароль:</label>
+                                        <label htmlFor="password">password:</label>
                                         <input
                                             type="password"
                                             id="password"
@@ -199,10 +196,10 @@ const MainPageComponent = () => {
                                         />
                                     </div>
                                     <button className="auth-button" type="submit">
-                                        {isLogin ? "Войти" : "Зарегистрироваться"}
+                                        {isLogin ? "login" : "register"}
                                     </button>
                                     <p onClick={toggleForm} className="toggle-link">
-                                        {isLogin ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
+                                        {isLogin ? 'has no account yet? register' : 'already registered? login'}
                                     </p>
                                 </form>
                             </div>
@@ -210,8 +207,7 @@ const MainPageComponent = () => {
                     ) : null
                 }
 
-                <div className="container">
-                    <div className="link-block">
+                        <h1>.md reader</h1>
                         <div className="pastelinkarea">
                             {error && <p style={{color: "red"}}>{error}</p>}
                             <input
@@ -222,39 +218,33 @@ const MainPageComponent = () => {
                                     setRepoLink(e.target.value);
                                     setError("");
                                 }}
-                                placeholder="Paste your repo link..."
+                                placeholder="paste your repo link..."
                             />
                         </div>
-                        <div className="read-md-button">
-                            <button id="read-md-button" onClick={fetchFiles}>
-                                READ MD
+                        <div className="ButtonGroup">
+                            <div className="read-md-button">
+                                <button id="read-md-button" onClick={fetchFiles}>
+                                    read .md
+                                </button>
+                            </div>
+                            <div className="upload-md-button">
+                            <button
+                                id="upload-md-button"
+                                onClick={() => document.getElementById("file-input").click()}
+                            >
+                                upload file
                             </button>
+                            <input
+                                type="file"
+                                id="file-input"
+                                style={{display: "none"}}
+                                accept=".md"
+                                multiple // Позволяем выбирать несколько файлов
+                                onChange={handleFileUpload}
+                            />
+                            </div>
                         </div>
-                    </div>
-                    <p>OR</p>
-                    <div className="upload-md-button">
-                        <button
-                            id="upload-md-button"
-                            onClick={() => document.getElementById("file-input").click()}
-                        >
-                            UPLOAD MD
-                        </button>
-                        <input
-                            type="file"
-                            id="file-input"
-                            style={{display: "none"}}
-                            accept=".md"
-                            multiple // Позволяем выбирать несколько файлов
-                            onChange={handleFileUpload}
-                        />
-                    </div>
-                </div>
             </main>
-
-
-            <footer className="footer">
-                <p>&copy; All rights reserved</p>
-            </footer>
         </div>
     );
 };
