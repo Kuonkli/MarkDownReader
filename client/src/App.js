@@ -3,12 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPageComponent from "./components/MainPageComponent";
 import FileComponent from "./components/FileComponent";
 import UserProjectsComponent from "./components/UserProjectsComponent";
-import Background from './components/BackgroundComponent';
 
 const App = () => {
     return (
         <Router>
-            <Background />
             <Routes>
                 <Route path="/" element={<MainPageComponent />} />
                 <Route path="/file" element={<FileComponent />} />

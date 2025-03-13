@@ -130,7 +130,7 @@ const MainPageComponent = () => {
     };
 
     return (
-        <div className="container">
+        <div>
             <header className="main-page-header">
                 <div>
                     <button
@@ -210,7 +210,8 @@ const MainPageComponent = () => {
                     ) : null
                 }
 
-                <div className="link-block ">
+                <div className="container">
+                    <div className="link-block">
                         <div className="pastelinkarea">
                             {error && <p style={{color: "red"}}>{error}</p>}
                             <input
@@ -224,32 +225,36 @@ const MainPageComponent = () => {
                                 placeholder="Paste your repo link..."
                             />
                         </div>
-                        <div className="ButtonGroup">
-                            <div className="read-md-button">
-                                <button id="read-md-button" onClick={fetchFiles}>
-                                    READ MD
-                                </button>
-                            </div>
-                            <div className="upload-md-button">
-                            <button
-                                id="upload-md-button"
-                                onClick={() => document.getElementById("file-input").click()}
-                            >
-                                UPLOAD MD
+                        <div className="read-md-button">
+                            <button id="read-md-button" onClick={fetchFiles}>
+                                READ MD
                             </button>
-                            <input
-                                type="file"
-                                id="file-input"
-                                style={{display: "none"}}
-                                accept=".md"
-                                multiple // Позволяем выбирать несколько файлов
-                                onChange={handleFileUpload}
-                            />
-                            </div>
-                        </div> 
-                    
+                        </div>
+                    </div>
+                    <p>OR</p>
+                    <div className="upload-md-button">
+                        <button
+                            id="upload-md-button"
+                            onClick={() => document.getElementById("file-input").click()}
+                        >
+                            UPLOAD MD
+                        </button>
+                        <input
+                            type="file"
+                            id="file-input"
+                            style={{display: "none"}}
+                            accept=".md"
+                            multiple // Позволяем выбирать несколько файлов
+                            onChange={handleFileUpload}
+                        />
+                    </div>
                 </div>
             </main>
+
+
+            <footer className="footer">
+                <p>&copy; All rights reserved</p>
+            </footer>
         </div>
     );
 };
