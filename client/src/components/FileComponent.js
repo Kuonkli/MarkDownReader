@@ -39,10 +39,12 @@ const FileComponent = () => {
     }, [location.state]);
 
     return (
-        <div className="file-container">
+        <div>
             {files.map((file, index) => (
-                <div>
-                    <h3 className={"file-name"}>{file.name}</h3>
+                <div className="file-container">
+                    <div className="file-name-block">
+                        <h3 className={"file-name"}>{file.name}</h3>
+                    </div>
                     <div key={index} className="markdown-box">
                         <div dangerouslySetInnerHTML={{__html: file.html}}/>
                     </div>
