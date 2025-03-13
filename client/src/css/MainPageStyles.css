@@ -1,28 +1,49 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Base styles */
-.main-page-header {
-    margin: 2vw 0;
-    padding: 0 2vw;
+
+.container {
+    min-height: 100vh;
+    padding: 2rem;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+}
+.main-page-header {
+    display: flex;
     justify-content: flex-end;
-    gap: 11px;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
-.header-button,
-#read-md-button,
-#upload-md-button {
-    border: none;
-    border-radius: 15px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: inherit;
-    color: #fff;
-    background-color: #00D9FF;
-    transition: transform 0.5s ease, background-color 0.3s ease;
-    cursor: pointer;
+
+.link-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
+
+.ButtonGroup {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+input{
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto 1rem;
+    padding: 0.75rem;
+    font-size: 1.25rem; /* Увеличенный размер шрифта */
+  
+    @media (max-width: 768px) {
+      font-size: 1rem; /* Меньше на мобильных устройствах */
+    }
+}
+
 
 .header-button {
     height: 40px;
@@ -30,48 +51,9 @@
     margin-right: 10px;
 }
 
-#read-md-button, #upload-md-button {
-    width: 150px;
-    height: 40px;
-    border-radius: 25px;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-}
 
-.container {
-    margin-top: 10vh;
-    margin-bottom: 10vh;
-    padding: 10%;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    align-items: center;
-    background-color: #2D2D2D;
-}
 
-.container p {
-    color: #fff;
-    margin: 0;
-}
 
-.footer {
-    color: #fff;
-    text-align: center;
-    margin-top: auto;
-    margin-bottom: 0;
-    font-size: 20px;
-}
-
-.link-block {
-    background-color: #848484;
-    width: 300px;
-    height: 150px;
-    border-radius: 45px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-}
 
 #repo-link {
     font-family: 'Montserrat', sans-serif;
@@ -84,76 +66,8 @@
     padding-left: 10px;
 }
 
-input:focus {
-    outline: none;
-}
 
-button:hover, #read-md-button:hover, #upload-md-button:hover {
-    background-color: #04b0ce;
-}
 
-button:active, #read-md-button:active, #upload-md-button:active {
-    transform: scale(1.1);
-}
-
-/* Tablet styles (min-width: 768px) */
-@media (min-width: 768px) {
-    html, body {
-        font-size: 20px;
-    }
-
-    .header {
-        gap: 13px;
-    }
-
-    .header-button {
-        height: 55px;
-        padding: 20px;
-    }
-
-    .container {
-        gap: 21px;
-    }
-
-    .link-block {
-        width: 400px;
-        height: 200px;
-    }
-
-    #repo-link {
-        width: 340px;
-        height: 68px;
-    }
-
-    #read-md-button, #upload-md-button {
-        width: 200px;
-        height: 55px;
-    }
-}
-
-/* Desktop styles (min-width: 1024px) */
-@media (min-width: 1024px) {
-    .header {
-        margin: 5% 0;
-    }
-
-    .container {
-        padding: 1%;
-        margin-bottom: 5%;
-    }
-
-    .link-block {
-        width: 800px;
-    }
-
-    #repo-link {
-        width: 700px;
-    }
-
-    #read-md-button, #upload-md-button {
-        width: 400px;
-    }
-}
 
 .auth-window {
     position: fixed;
