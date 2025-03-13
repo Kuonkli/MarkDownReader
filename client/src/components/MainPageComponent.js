@@ -128,20 +128,18 @@ const MainPageComponent = () => {
     return (
         <div className="container">
             <header className="main-page-header">
-                <div>
                     <button
                         className="header-button"
                         id="login"
                         onClick={() => toggleAuthVisibility(true)}>
-                        Login
+                        login
                     </button>
                     <button
                         className="header-button"
                         id="register"
                         onClick={() => toggleAuthVisibility(false)}>
-                        Register
+                        register
                     </button>
-                </div>
             </header>
 
             <main className="main">
@@ -153,13 +151,13 @@ const MainPageComponent = () => {
                             }
                         }}>
                             <div className="auth-container">
-                                <h2>{isLogin ? "Авторизация" : "Регистрация"}</h2>
+                                <h2>{isLogin ? "auth" : "registration"}</h2>
                                 {authError && <p className={"error-message"}>{authError}</p>}
                                 <form onSubmit={handleAuthSubmit}>
                                     {!isLogin && (
                                         <>
                                             <div className="form-group">
-                                                <label htmlFor="nickname">Имя аккаунта:</label>
+                                                <label htmlFor="nickname">nickname:</label>
                                                 <input
                                                     type="text"
                                                     id="nickname"
@@ -172,7 +170,7 @@ const MainPageComponent = () => {
                                         </>
                                     )}
                                     <div className="form-group">
-                                        <label htmlFor="email">Email:</label>
+                                        <label htmlFor="email">email:</label>
                                         <input
                                             type="email"
                                             id="email"
@@ -183,7 +181,7 @@ const MainPageComponent = () => {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="password">Пароль:</label>
+                                        <label htmlFor="password">password:</label>
                                         <input
                                             type="password"
                                             id="password"
@@ -194,10 +192,10 @@ const MainPageComponent = () => {
                                         />
                                     </div>
                                     <button className="auth-button" type="submit">
-                                        {isLogin ? "Войти" : "Зарегистрироваться"}
+                                        {isLogin ? "login" : "register"}
                                     </button>
                                     <p onClick={toggleForm} className="toggle-link">
-                                        {isLogin ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
+                                        {isLogin ? 'has no account yet? register' : 'already registered? login'}
                                     </p>
                                 </form>
                             </div>
@@ -205,7 +203,7 @@ const MainPageComponent = () => {
                     ) : null
                 }
 
-                <div className="link-block ">
+                        <h1>.md reader</h1>
                         <div className="pastelinkarea">
                             {error && <p style={{color: "red"}}>{error}</p>}
                             <input
@@ -222,7 +220,7 @@ const MainPageComponent = () => {
                         <div className="ButtonGroup">
                             <div className="read-md-button">
                                 <button id="read-md-button" onClick={fetchFiles}>
-                                    READ MD
+                                    read .md
                                 </button>
                             </div>
                             <div className="upload-md-button">
@@ -230,7 +228,7 @@ const MainPageComponent = () => {
                                 id="upload-md-button"
                                 onClick={() => document.getElementById("file-input").click()}
                             >
-                                UPLOAD MD
+                                upload file
                             </button>
                             <input
                                 type="file"
@@ -242,8 +240,6 @@ const MainPageComponent = () => {
                             />
                             </div>
                         </div> 
-                    
-                </div>
             </main>
         </div>
     );

@@ -9,14 +9,26 @@
     flex-direction: column;
     justify-content: flex-start;
 }
+
 .main-page-header {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
     margin-bottom: 2rem;
 }
+.header-button{
+    padding: 0.75rem 1.5rem;
+    font-size: 1.25rem; /* Увеличенный размер шрифта */
+    cursor: pointer;
 
-
+    @media (max-width: 768px) {
+        font-size: 1rem; /* Меньше на мобильных устройствах */
+        padding: 0.5rem 1rem;
+  }   
+}
+h2{
+    border-bottom: none;
+}
 .main {
     flex: 1;
     display: flex;
@@ -27,7 +39,9 @@
     margin-bottom: auto;
     text-align: center;
 }
-
+.pastelinkarea {
+    width: 100%;
+}
 .ButtonGroup {
     display: flex;
     gap: 1rem;
@@ -41,17 +55,36 @@ input{
     margin: 0 auto 1rem;
     padding: 0.75rem;
     font-size: 1.25rem; /* Увеличенный размер шрифта */
-  
+
     @media (max-width: 768px) {
-      font-size: 1rem; /* Меньше на мобильных устройствах */
+        font-size: 1rem; /* Меньше на мобильных устройствах */
     }
 }
 
+h1{
+    font-size: 3rem; /* Увеличенный размер шрифта */
+    margin-bottom: 2rem;
 
-.header-button {
-    height: 40px;
-    padding: 10px;
-    margin-right: 10px;
+    @media (max-width: 768px) {
+        font-size: 2.5rem; /* Меньше на мобильных устройствах */
+    }
+
+    @media (max-width: 480px) {
+        font-size: 2rem; /* Еще меньше на очень маленьких экранах */
+    }
+}
+h2{
+    border-bottom: none;
+}
+button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.25rem; /* Увеличенный размер шрифта */
+    cursor: pointer;
+
+    @media (max-width: 768px) {
+        font-size: 1rem; /* Меньше на мобильных устройствах */
+        padding: 0.5rem 1rem;
+  }
 }
 
 
@@ -65,7 +98,7 @@ input{
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.90); /* Полупрозрачный затемнённый фон */
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный затемнённый фон */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -77,14 +110,15 @@ input{
 }
 
 .auth-container {
-    background-color: #2D2D2D;
-    width: 350px;
-    padding: 20px;
-    border-radius: 25px;
+    background-color: #131212;
+    min-width: 40%;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 1rem;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 2rem;
     align-items: center;
     color: #fff;
     font-family: 'Montserrat', sans-serif;
@@ -97,61 +131,35 @@ input{
 
 .auth-container h2 {
     margin: 0;
-    font-size: 24px;
-    color: #00D9FF;
+    font-size: 1.5rem;
+    color: #ffffff;
 }
 
 .form-group {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.25rem;
     margin-bottom: 1vw;
 }
 
 .form-group label {
-    font-size: 14px;
+    font-size: 1rem;
     color: #fff;
 }
 
-.form-group input {
-    height: 40px;
-    border: none;
-    border-radius: 15px;
-    padding: 0 10px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 800;
-    color: #000;
-}
 
-.form-group input:focus {
-    outline: none;
-    border: 2px solid #00D9FF;
-    background-color: #f0f0f0;
-}
+
 
 .auth-button {
     width: 100%;
-    height: 45px;
-    background-color: #00D9FF;
     border: none;
-    border-radius: 25px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    color: #fff;
-    font-size: 16px;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.auth-button:hover {
-    background-color: #04b0ce;
-}
 
-.auth-button:active {
-    transform: scale(1.05);
-}
 
 .error-message {
     color: red;
@@ -159,15 +167,17 @@ input{
 }
 
 .toggle-link {
+    margin-top: 2rem ;
     font-size: 14px;
-    color: #00D9FF;
+    color: #e100ff;
     cursor: pointer;
-    text-decoration: underline;
+
     text-align: center;
 }
 
 .toggle-link:hover {
-    color: #04b0ce;
+    color: #ffffff;
+    text-decoration: underline;
 }
 
 /* Tablet styles (min-width: 768px) */
