@@ -3,15 +3,14 @@ package handlers
 import (
 	db "MarkDownReader/database"
 	"MarkDownReader/models"
-	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -52,13 +51,11 @@ func SignUp(c *gin.Context) {
 		Password: string(hashedPassword),
 	}
 	if err := db.DB.Create(&user).Error; err != nil {
-		var pqErr *pq.Error
-		if errors.As(err, &pqErr) && pqErr.Code == "23505" {
+		if strings.Contains(err.Error(), "(SQLSTATE 23505)") {
 			c.JSON(http.StatusConflict, gin.H{"error": "email already exists"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		log.Println(err)
 		return
 	}
 
