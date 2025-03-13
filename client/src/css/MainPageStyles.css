@@ -7,6 +7,7 @@
     padding: 2rem;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
 }
 .main-page-header {
     display: flex;
@@ -16,12 +17,14 @@
 }
 
 
-.link-block {
+.main {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: auto;
+    margin-bottom: auto;
     text-align: center;
 }
 
@@ -52,19 +55,6 @@ input{
 }
 
 
-
-
-
-#repo-link {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: inherit;
-    width: 252px;
-    height: 50px;
-    border-radius: 25px;
-    border: none;
-    padding-left: 10px;
-}
 
 
 

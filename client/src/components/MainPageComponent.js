@@ -216,7 +216,7 @@ const MainPageComponent = () => {
                                     setRepoLink(e.target.value);
                                     setError("");
                                 }}
-                                placeholder="Paste your repo link..."
+                                placeholder="paste your repo link..."
                             />
                         </div>
                         <div className="ButtonGroup">
