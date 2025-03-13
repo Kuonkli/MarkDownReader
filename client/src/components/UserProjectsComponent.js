@@ -8,7 +8,7 @@ const UserProjectsComponent = (callback, deps) => {
     const [error, setError] = useState("");
     const [projects, setProjects] = useState([]);
     const navigate = useNavigate();
-
+    /*
     const fetchProjects = useCallback(async (url) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -21,9 +21,7 @@ const UserProjectsComponent = (callback, deps) => {
 
             if (response.ok) {
                 const files = await response.json();
-                console.log(files);
                 setProjects(files.files);
-                console.log(projects)
             } else if (response.status === 401) {
                 await AuthService.refreshToken();
                 return fetchProjects(url)
@@ -32,9 +30,10 @@ const UserProjectsComponent = (callback, deps) => {
             }
         } catch (error) {
             console.error("Error while fetching projects:", error);
+            await AuthService.refreshToken();
         }
     }, [])
-
+    */
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
         if (files.length > 0) {
@@ -55,18 +54,87 @@ const UserProjectsComponent = (callback, deps) => {
     };
 
     useEffect(() => {
+        /*
         const apiUrl = "http://localhost:8080/api/get/files";
         fetchProjects(apiUrl).catch((err) => {console.error(err)});
-    }, [fetchProjects]);
+         */
+        setProjects([
+            {
+                "ID": 25,
+                "CreatedAt": "2025-03-07T16:50:20.562503+03:00",
+                "UpdatedAt": "2025-03-07T16:50:20.562503+03:00",
+                "DeletedAt": null,
+                "Filename": "mdproject_1_1741355420559925557",
+                "FileURL": "markdown-storage/mdproject_1_1741355420561454336.md",
+                "UserID": 1
+            },
+            {
+                "ID": 26,
+                "CreatedAt": "2025-03-07T16:50:48.243495+03:00",
+                "UpdatedAt": "2025-03-07T16:50:48.243495+03:00",
+                "DeletedAt": null,
+                "Filename": "test",
+                "FileURL": "markdown-storage/mdproject_1_1741355448240568783.md",
+                "UserID": 1
+            },
+            {
+                "ID": 24,
+                "CreatedAt": "2025-03-07T16:50:05.662884+03:00",
+                "UpdatedAt": "2025-03-07T21:03:51.652359+03:00",
+                "DeletedAt": null,
+                "Filename": "test123",
+                "FileURL": "markdown-storage/mdproject_1_1741355405661926108.md",
+                "UserID": 1
+            },
+            {
+                "ID": 27,
+                "CreatedAt": "2025-03-11T16:20:33.41293+03:00",
+                "UpdatedAt": "2025-03-11T16:20:33.41293+03:00",
+                "DeletedAt": null,
+                "Filename": "mdproject_1_1741699233390040901",
+                "FileURL": "markdown-storage/mdproject_1_1741699233407028470.md",
+                "UserID": 1
+            }
+        ])
+    }, []);
 
 
-    const fetchFiles = () => {
-        if (!repoLink) {
-            setError("Please enter a valid repository link.");
-            return;
+    const fetchFiles = async () => {
+        try {
+            if (!repoLink) {
+                setError("Please enter a valid repository link.");
+                return;
+            }
+            setError("");
+
+            const apiUrl = repoLink.replace("https://github.com", "https://api.github.com/repos") + "/contents";
+            const response = await fetch(apiUrl);
+
+            if (response.ok) {
+                const files = await response.json();
+                const mdFiles = files.filter((file) => file.name.endsWith(".md"));
+
+                if (mdFiles.length === 0) {
+                    setError("No Markdown files found in the repository.");
+                    return;
+                }
+
+                const contents = await Promise.all(
+                    mdFiles.map(async (mdFile) => {
+                        const fileResponse = await fetch(mdFile.download_url);
+                        const fileContent = await fileResponse.text();
+                        return { name: mdFile.name, content: fileContent };
+                    })
+                );
+
+                navigate("/file", { state: { files: contents } }); // Передаём массив файлов
+            } else {
+                setError("Failed to fetch repository contents. Please check the URL.");
+            }
+        } catch (err) {
+            setError("An error occurred while fetching the files.");
+            console.error(err);
         }
-        setError("");
-        console.log("Fetching files from:", repoLink);
     };
 
     return (

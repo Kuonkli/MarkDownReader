@@ -155,17 +155,28 @@ button:active, #read-md-button:active, #upload-md-button:active {
     }
 }
 
+.auth-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .auth-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.90); /* Полупрозрачный затемнённый фон */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Поверх всех остальных элементов */
+    z-index: 800; /* Поверх всех остальных элементов */
+    background-color: rgba(0, 0, 0, 0.90); /* Полупрозрачный затемнённый фон */
 }
 
 .auth-overlay:hover {
@@ -185,10 +196,7 @@ button:active, #read-md-button:active, #upload-md-button:active {
     color: #fff;
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
-}
-
-.auth-container:hover {
-    cursor: default;
+    z-index: 1000;
 }
 
 .auth-container h2 {

@@ -25,6 +25,10 @@ const MainPageComponent = () => {
     const toggleAuthVisibility = (isAuthorization) => {
         setIsLogin(isAuthorization);
         setAuthVisibility(!AuthVisibility);
+        setEmail("");
+        setPassword("");
+        setNickname("");
+        setAuthError("");
     }
 
     const handleAuthSubmit = async (event) => {
@@ -147,11 +151,12 @@ const MainPageComponent = () => {
             <main className="main">
                 {AuthVisibility ?
                     (
-                        <div id={"auth-overlay"} className={"auth-overlay"} onClick={(e) => {
-                            if (e.target === document.getElementById("auth-overlay")) {
-                                setAuthVisibility(false);
-                            }
-                        }}>
+                        <div className={"auth-window"}>
+                            <div id={"auth-overlay"}  className={"auth-overlay"} onClick={(e) => {
+                                if (e.target === document.getElementById("auth-overlay")) {
+                                    setAuthVisibility(false);
+                                }
+                            }}/>
                             <div className="auth-container">
                                 <h2>{isLogin ? "Авторизация" : "Регистрация"}</h2>
                                 {authError && <p className={"error-message"}>{authError}</p>}
