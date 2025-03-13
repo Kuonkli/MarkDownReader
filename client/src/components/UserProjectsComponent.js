@@ -8,7 +8,7 @@ const UserProjectsComponent = (callback, deps) => {
     const [error, setError] = useState("");
     const [projects, setProjects] = useState([]);
     const navigate = useNavigate();
-/*
+
     const fetchProjects = useCallback(async (url) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -33,7 +33,7 @@ const UserProjectsComponent = (callback, deps) => {
         } catch (error) {
             console.error("Error while fetching projects:", error);
         }
-    }, [])*/
+    }, [])
 
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -54,55 +54,11 @@ const UserProjectsComponent = (callback, deps) => {
         }
     };
 
-    /*useEffect(() => {
-        const apiUrl = "http://localhost:8080/api/get/files";
-        fetchProjects(apiUrl).catch((err) => {console.error(err)});
-    }, [fetchProjects]);*/
-
     useEffect(() => {
-        /*
         const apiUrl = "http://localhost:8080/api/get/files";
         fetchProjects(apiUrl).catch((err) => {console.error(err)});
-         */
-        setProjects([
-            {
-                "ID": 25,
-                "CreatedAt": "2025-03-07T16:50:20.562503+03:00",
-                "UpdatedAt": "2025-03-07T16:50:20.562503+03:00",
-                "DeletedAt": null,
-                "Filename": "mdproject_1_1741355420559925557",
-                "FileURL": "markdown-storage/mdproject_1_1741355420561454336.md",
-                "UserID": 1
-            },
-            {
-                "ID": 26,
-                "CreatedAt": "2025-03-07T16:50:48.243495+03:00",
-                "UpdatedAt": "2025-03-07T16:50:48.243495+03:00",
-                "DeletedAt": null,
-                "Filename": "test",
-                "FileURL": "markdown-storage/mdproject_1_1741355448240568783.md",
-                "UserID": 1
-            },
-            {
-                "ID": 24,
-                "CreatedAt": "2025-03-07T16:50:05.662884+03:00",
-                "UpdatedAt": "2025-03-07T21:03:51.652359+03:00",
-                "DeletedAt": null,
-                "Filename": "test123",
-                "FileURL": "markdown-storage/mdproject_1_1741355405661926108.md",
-                "UserID": 1
-            },
-            {
-                "ID": 27,
-                "CreatedAt": "2025-03-11T16:20:33.41293+03:00",
-                "UpdatedAt": "2025-03-11T16:20:33.41293+03:00",
-                "DeletedAt": null,
-                "Filename": "mdproject_1_1741699233390040901",
-                "FileURL": "markdown-storage/mdproject_1_1741699233407028470.md",
-                "UserID": 1
-            }
-        ])
-    }, []);
+    }, [fetchProjects]);
+
 
     const fetchFiles = () => {
         if (!repoLink) {
