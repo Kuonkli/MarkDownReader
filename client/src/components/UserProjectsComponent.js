@@ -8,7 +8,7 @@ const UserProjectsComponent = (callback, deps) => {
     const [error, setError] = useState("");
     const [projects, setProjects] = useState([]);
     const navigate = useNavigate();
-    /*
+/*
     const fetchProjects = useCallback(async (url) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -21,7 +21,9 @@ const UserProjectsComponent = (callback, deps) => {
 
             if (response.ok) {
                 const files = await response.json();
+                console.log(files);
                 setProjects(files.files);
+                console.log(projects)
             } else if (response.status === 401) {
                 await AuthService.refreshToken();
                 return fetchProjects(url)
@@ -32,8 +34,8 @@ const UserProjectsComponent = (callback, deps) => {
             console.error("Error while fetching projects:", error);
             await AuthService.refreshToken();
         }
-    }, [])
-    */
+    }, [])*/
+
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
         if (files.length > 0) {
@@ -52,6 +54,11 @@ const UserProjectsComponent = (callback, deps) => {
             });
         }
     };
+
+    /*useEffect(() => {
+        const apiUrl = "http://localhost:8080/api/get/files";
+        fetchProjects(apiUrl).catch((err) => {console.error(err)});
+    }, [fetchProjects]);*/
 
     useEffect(() => {
         /*
@@ -98,7 +105,6 @@ const UserProjectsComponent = (callback, deps) => {
         ])
     }, []);
 
-
     const fetchFiles = async () => {
         try {
             if (!repoLink) {
@@ -141,36 +147,34 @@ const UserProjectsComponent = (callback, deps) => {
         <div>
             <header className="projects-header">
                 <div className="file-actions">
-                    <div className="link-row">
-                        <input
-                            type="text"
-                            id="projects-repo-link"
-                            value={repoLink}
-                            onChange={(e) => {
-                                setRepoLink(e.target.value);
-                                setError("");
-                            }}
-                            placeholder="Paste your repo link..."
-                        />
-                        <button id="projects-read-md-button" onClick={fetchFiles}>
-                            READ MD
+                    <input
+                        type="text"
+                        id="projects-repo-link"
+                        value={repoLink}
+                        onChange={(e) => {
+                            setRepoLink(e.target.value);
+                            setError("");
+                        }}
+                        placeholder="paste your repo link..."
+                    />
+                    <button id="projects-read-md-button" onClick={fetchFiles}>
+                        read .md
+                    </button>
+                    <div className="projects-upload-md-button">
+                        <button
+                            id="projects-upload-md-button"
+                            onClick={() => document.getElementById("renamed-file-input").click()}
+                        >
+                            upload file
                         </button>
-                        <div className="projects-upload-md-button">
-                            <button
-                                id="projects-upload-md-button"
-                                onClick={() => document.getElementById("renamed-file-input").click()}
-                            >
-                                UPLOAD MD
-                            </button>
-                            <input
-                                type="file"
-                                id="renamed-file-input"
-                                style={{ display: "none" }}
-                                accept=".md"
-                                multiple
-                                onChange={handleFileUpload}
-                            />
-                        </div>
+                        <input
+                            type="file"
+                            id="renamed-file-input"
+                            style={{ display: "none" }}
+                            accept=".md"
+                            multiple
+                            onChange={handleFileUpload}
+                        />
                     </div>
                 </div>
             </header>
@@ -184,16 +188,13 @@ const UserProjectsComponent = (callback, deps) => {
                             </div>
                         ))
                     ) : (
-                        <p>Loading projects...
+                        <p>loading projects...
                             {error && <p style={{color: "red"}}>{error}</p>}
                         </p>
 
                     )}
                 </div>
             </div>
-            <footer className="footer">
-                <p>&copy; All rights reserved</p>
-            </footer>
         </div>
     );
 };
