@@ -3,8 +3,16 @@ import "../css/UserProfileStyles.css";
 import { useNavigate } from "react-router-dom";
 
 const UserProfileComponent = () => {
+    const navigate = useNavigate();
+    const handleLogout = async (event) => {
+        navigate("/");
+    }
+
+
+
+
     return (
-        <div className="container">
+        <div className="containerUserProfile">
             <div className="UserCard">
                 <div className="UserName">
                     John Doe
@@ -15,7 +23,7 @@ const UserProfileComponent = () => {
                 <div className="UserDateCreate">
                     09.11.2011
                 </div>
-                <button className="logoutButton">
+                <button className="logoutButton" onClick={handleLogout}>
                     logout
                 </button>
             </div>
