@@ -26,8 +26,6 @@
 .markdown-box img {
     max-width: 100%; /* Изображение не превысит ширину контейнера */
     max-height: 100%; /* Изображение не превысит высоту контейнера */
-    height: auto; /* Сохраняет пропорции изображения */
-    display: block;
 }
 .file-name-block{
     width: 100%;
