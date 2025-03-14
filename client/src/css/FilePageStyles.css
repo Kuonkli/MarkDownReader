@@ -20,26 +20,75 @@
     overflow: auto;
     font-family: "Arial", sans-serif;
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 2;
     color: #333333;
 }
 .markdown-box img {
     max-width: 100%; /* Изображение не превысит ширину контейнера */
     max-height: 100%; /* Изображение не превысит высоту контейнера */
-    height: auto; /* Сохраняет пропорции изображения */
-    display: block;
 }
 .file-name-block{
     width: 100%;
     max-width: 900px;
-    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
 }
 .file-name {
     color: #ffffff
     
 }
 
-h2 {
+.file-save-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.file-save-actions button {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.save-actions-icons {
+    width: 1.5rem;
+}
+
+.navigate-back-button {
+    color: white;
+    text-decoration: underline;
+    font-size: 1.1rem;
+}
+
+.navigate-back-button:hover {
+    cursor: pointer;
+}
+
+.markdown-box h1 {
+    margin: revert !important;
+    padding: revert !important;
+}
+
+.markdown-box ul, ol {
+    margin: revert !important;
+    padding: revert !important;
+}
+
+.markdown-box li {
+    margin: revert !important;
+    padding: revert !important;
+}
+
+.markdown-box h2 {
+    margin: revert !important;
+    padding: revert !important;
     border-bottom: 1px solid lightgray;
 }
 
@@ -65,4 +114,8 @@ code {
     padding: 0 0.2rem 0 0.2rem;
     white-space: pre-wrap; /* Сохраняет пробелы и переносы */
     word-break: break-all; /* Принудительно переносит длинные слова */
+}
+
+a {
+    color: blue;
 }

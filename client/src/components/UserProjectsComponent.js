@@ -1,14 +1,16 @@
 import React, {useState, useEffect, useCallback} from "react";
 import "../css/UserProjectsStyles.css";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import AuthService from "../services/AuthService";
+import ProfileIcon from "../assets/images/user-icon.png";
+import FileIcon from "../assets/images/file-icon.png";
 
 const UserProjectsComponent = (callback, deps) => {
     const [repoLink, setRepoLink] = useState("");
     const [error, setError] = useState("");
     const [projects, setProjects] = useState([]);
     const navigate = useNavigate();
-/*
+
     const fetchProjects = useCallback(async (url) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -21,9 +23,7 @@ const UserProjectsComponent = (callback, deps) => {
 
             if (response.ok) {
                 const files = await response.json();
-                console.log(files);
                 setProjects(files.files);
-                console.log(projects)
             } else if (response.status === 401) {
                 await AuthService.refreshToken();
                 return fetchProjects(url)
@@ -34,7 +34,7 @@ const UserProjectsComponent = (callback, deps) => {
             console.error("Error while fetching projects:", error);
             await AuthService.refreshToken();
         }
-    }, [])*/
+    }, [])
 
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -55,55 +55,10 @@ const UserProjectsComponent = (callback, deps) => {
         }
     };
 
-    /*useEffect(() => {
-        const apiUrl = "http://localhost:8080/api/get/files";
-        fetchProjects(apiUrl).catch((err) => {console.error(err)});
-    }, [fetchProjects]);*/
-
     useEffect(() => {
-        /*
         const apiUrl = "http://localhost:8080/api/get/files";
         fetchProjects(apiUrl).catch((err) => {console.error(err)});
-         */
-        setProjects([
-            {
-                "ID": 25,
-                "CreatedAt": "2025-03-07T16:50:20.562503+03:00",
-                "UpdatedAt": "2025-03-07T16:50:20.562503+03:00",
-                "DeletedAt": null,
-                "Filename": "mdproject_1_1741355420559925557",
-                "FileURL": "markdown-storage/mdproject_1_1741355420561454336.md",
-                "UserID": 1
-            },
-            {
-                "ID": 26,
-                "CreatedAt": "2025-03-07T16:50:48.243495+03:00",
-                "UpdatedAt": "2025-03-07T16:50:48.243495+03:00",
-                "DeletedAt": null,
-                "Filename": "test",
-                "FileURL": "markdown-storage/mdproject_1_1741355448240568783.md",
-                "UserID": 1
-            },
-            {
-                "ID": 24,
-                "CreatedAt": "2025-03-07T16:50:05.662884+03:00",
-                "UpdatedAt": "2025-03-07T21:03:51.652359+03:00",
-                "DeletedAt": null,
-                "Filename": "test123",
-                "FileURL": "markdown-storage/mdproject_1_1741355405661926108.md",
-                "UserID": 1
-            },
-            {
-                "ID": 27,
-                "CreatedAt": "2025-03-11T16:20:33.41293+03:00",
-                "UpdatedAt": "2025-03-11T16:20:33.41293+03:00",
-                "DeletedAt": null,
-                "Filename": "mdproject_1_1741699233390040901",
-                "FileURL": "markdown-storage/mdproject_1_1741699233407028470.md",
-                "UserID": 1
-            }
-        ])
-    }, []);
+    }, [fetchProjects]);
 
     const fetchFiles = async () => {
         try {
@@ -143,38 +98,97 @@ const UserProjectsComponent = (callback, deps) => {
         }
     };
 
+    const handleFileOpen = async (file) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await fetch(`http://localhost:8080/api/${file.FileURL}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+            console.log("Server response:", response);
+            if (response.ok) {
+                const markdownContent = await response.text();
+                const contents = [{ name: file.Filename, content: markdownContent }]
+                navigate("/file", { state : { files: contents } });
+            } else if (response.status === 401) {
+                await AuthService.refreshToken();
+                return handleFileOpen(file)
+            } else {
+                throw new Error("Invalid response data format");
+            }
+
+        } catch (error) {
+            console.error("Error while fetching projects:", error);
+            await AuthService.refreshToken();
+        }
+    }
+
     return (
         <div>
             <header className="projects-header">
                 <div className="file-actions">
-                    <input
-                        type="text"
-                        id="projects-repo-link"
-                        value={repoLink}
-                        onChange={(e) => {
-                            setRepoLink(e.target.value);
-                            setError("");
-                        }}
-                        placeholder="paste your repo link..."
-                    />
-                    <button id="projects-read-md-button" onClick={fetchFiles}>
-                        read .md
-                    </button>
-                    <div className="projects-upload-md-button">
-                        <button
-                            id="projects-upload-md-button"
-                            onClick={() => document.getElementById("renamed-file-input").click()}
-                        >
-                            upload file
-                        </button>
+                    <div className="link-row">
                         <input
-                            type="file"
-                            id="renamed-file-input"
-                            style={{ display: "none" }}
-                            accept=".md"
-                            multiple
-                            onChange={handleFileUpload}
+                            type="text"
+                            id="projects-repo-link"
+                            value={repoLink}
+                            onChange={(e) => {
+                                setRepoLink(e.target.value);
+                                setError("");
+                            }}
+                            placeholder="Paste your repo link..."
                         />
+                        <button id="projects-read-md-button" onClick={fetchFiles}>
+                            READ MD
+                        </button>
+                        <div className="projects-upload-md-button">
+                            <button
+                                id="projects-upload-md-button"
+                                onClick={() => document.getElementById("renamed-file-input").click()}
+                            >
+                                UPLOAD MD
+                            </button>
+                            <input
+                                type="file"
+                                id="renamed-file-input"
+                                style={{ display: "none" }}
+                                accept=".md"
+                                multiple
+                                onChange={handleFileUpload}
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <Link to={`/profile`}>
+                            <svg
+                                className="profile-link"
+                                width="120"
+                                height="120"
+                                viewBox="0 0 120 120"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <filter id="circle-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="rgba(141, 56, 255, 0.2)"/>
+                                    </filter>
+                                </defs>
+
+                                <circle
+                                    cx="60"
+                                    cy="60"
+                                    r="50"
+                                    fill="url(#iconImage)"
+                                    className="circle-element"
+                                />
+
+                                <defs>
+                                    <pattern id="iconImage" patternUnits="objectBoundingBox" width="1" height="1">
+                                        <image href={ProfileIcon} x="0" y="0" width="100" height="100"
+                                               preserveAspectRatio="xMidYMid slice"/>
+                                    </pattern>
+                                </defs>
+                            </svg>
+                        </Link>
                     </div>
                 </div>
             </header>
@@ -183,8 +197,12 @@ const UserProjectsComponent = (callback, deps) => {
                     {projects.length > 0 ? (
                         projects.map((project, index) => (
                             <div key={index} className="project-card">
-                                <h3>{project.Filename}</h3>
+                                <div>
+                                    <img className={"projects-file-icons"} src={FileIcon} alt={"file-icon" + index.toString()}/>
+                                </div>
+                                <h3>{project.Filename.length > 15 ? (project.Filename.slice(0, 15) + "...") : (project.Filename)}</h3>
                                 <p>{new Date(project.CreatedAt).toISOString().slice(0, 10)}</p>
+                                <button className={"projects-file-buttons"} onClick={() => handleFileOpen(project)}>Open</button>
                             </div>
                         ))
                     ) : (

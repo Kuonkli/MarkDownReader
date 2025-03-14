@@ -32,6 +32,7 @@ func (s *APIServer) Run() error {
 
 	api := router.Group("/api", handlers.AuthMiddleware())
 	{
+		api.Static("/markdown-storage", "./markdown-storage")
 		get := api.Group("/get")
 		{
 			get.GET("/profile", handlers.GetProfileHandler)

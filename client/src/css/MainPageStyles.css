@@ -20,13 +20,15 @@
     padding: 0.75rem 1.5rem;
     font-size: 1.25rem; /* Увеличенный размер шрифта */
     cursor: pointer;
-    font-weight: bold;
+
     @media (max-width: 768px) {
         font-size: 1rem; /* Меньше на мобильных устройствах */
         padding: 0.5rem 1rem;
-  }   
+  }
 }
-
+h2{
+    border-bottom: none;
+}
 .main {
     flex: 1;
     display: flex;
@@ -60,9 +62,9 @@ input{
 }
 
 h1{
-    font-size: 3rem; /* Увеличенный размер шрифта */
+    font-size: 2rem; /* Увеличенный размер шрифта */
     margin-bottom: 2rem;
-    font-weight: bold;
+
     @media (max-width: 768px) {
         font-size: 2.5rem; /* Меньше на мобильных устройствах */
     }
@@ -71,17 +73,21 @@ h1{
         font-size: 2rem; /* Еще меньше на очень маленьких экранах */
     }
 }
-
+h2{
+    border-bottom: none;
+}
 button {
     padding: 0.75rem 1.5rem;
     font-size: 1.25rem; /* Увеличенный размер шрифта */
     cursor: pointer;
-    font-weight: bold;
+
     @media (max-width: 768px) {
         font-size: 1rem; /* Меньше на мобильных устройствах */
         padding: 0.5rem 1rem;
   }
 }
+
+
 
 .auth-window {
     position: fixed;
@@ -104,7 +110,6 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Поверх всех остальных элементов */
 }
 
 .auth-overlay:hover {
@@ -125,6 +130,7 @@ button {
     color: #fff;
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
+    z-index: 1000;
 }
 
 .auth-container:hover {
