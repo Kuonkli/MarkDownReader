@@ -1,0 +1,30 @@
+.container {
+    justify-content: center;
+    align-items: center;
+}
+
+.UserCard{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 0.3rem;
+    padding: 2rem;
+    background-color: #383838b3;;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: start;
+    white-space: pre-wrap; /* Сохраняет пробелы и переносы */
+    word-break: break-all; /* Принудительно переносит длинные слова */
+    font-size: clamp(0.5em, 4vw, 2em);
+    font-weight: bold;
+}
+
+.logoutButton {
+    background: none;
+    border: 1px solid red;
+    color: red;
+    max-width: 60%;
+    align-self: center;
+    margin-top: 3rem;
+}
