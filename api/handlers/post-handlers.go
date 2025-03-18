@@ -35,10 +35,9 @@ func PostMDFileHandler(c *gin.Context) {
 		return
 	}
 
-	if extension := filepath.Ext(file.Filename); extension != ".md" {
+	if contentType := file.Header.Get("Content-Type"); contentType != "text/markdown" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "invalid file extension",
-			"details": fmt.Sprintf("file extension is %s", extension),
+			"error": fmt.Sprintf("invalid content type: %s", contentType),
 		})
 		return
 	}
@@ -49,7 +48,7 @@ func PostMDFileHandler(c *gin.Context) {
 	}
 
 	var count int64
-	db.DB.Model(&models.MarkdownFile{}).Where("filename = ?", fileName).Count(&count)
+	db.DB.Model(&models.MarkdownFile{}).Where("filename = ? AND user_id = ?", fileName, userID).Count(&count)
 	if count > 0 {
 		c.JSON(http.StatusConflict, gin.H{"error": "filename already exists"})
 		return

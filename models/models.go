@@ -11,7 +11,7 @@ type User struct {
 
 type MarkdownFile struct {
 	gorm.Model
-	Filename string `gorm:"size:100;unique;not null"`
+	Filename string `gorm:"size:100;not null"`
 	FileURL  string `gorm:"type:text;not null"`
 	UserID   uint   `gorm:"not null"`
 	User     User   `gorm:"foreignKey:UserID" json:"-"`

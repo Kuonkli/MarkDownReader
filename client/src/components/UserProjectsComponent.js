@@ -4,12 +4,14 @@ import {Link, useNavigate} from "react-router-dom";
 import AuthService from "../services/AuthService";
 import ProfileIcon from "../assets/images/user-icon.png";
 import FileIcon from "../assets/images/file-icon.png";
+import { useAlert } from "../services/AlertContext";
 
 const UserProjectsComponent = (callback, deps) => {
     const [repoLink, setRepoLink] = useState("");
     const [error, setError] = useState("");
     const [projects, setProjects] = useState([]);
     const navigate = useNavigate();
+    const { showAlert } = useAlert();
 
     const fetchProjects = useCallback(async (url) => {
         try {
@@ -21,13 +23,14 @@ const UserProjectsComponent = (callback, deps) => {
             });
             console.log("Server response:", response);
 
+            const result = await response.json()
             if (response.ok) {
-                const files = await response.json();
-                setProjects(files.files);
+                setProjects(result.files);
             } else if (response.status === 401) {
                 await AuthService.refreshToken();
                 return fetchProjects(url)
             } else {
+                showAlert(response.status, response);
                 throw new Error("Invalid response data format");
             }
         } catch (error) {
@@ -63,7 +66,7 @@ const UserProjectsComponent = (callback, deps) => {
     const fetchFiles = async () => {
         try {
             if (!repoLink) {
-                setError("Please enter a valid repository link.");
+                showAlert(400, "Please enter a valid repository link.")
                 return;
             }
             setError("");
@@ -76,7 +79,7 @@ const UserProjectsComponent = (callback, deps) => {
                 const mdFiles = files.filter((file) => file.name.endsWith(".md"));
 
                 if (mdFiles.length === 0) {
-                    setError("No Markdown files found in the repository.");
+                    showAlert(0, "No Markdown files found in the repository.")
                     return;
                 }
 
@@ -90,10 +93,10 @@ const UserProjectsComponent = (callback, deps) => {
 
                 navigate("/file", { state: { files: contents } }); // Передаём массив файлов
             } else {
-                setError("Failed to fetch repository contents. Please check the URL.");
+                showAlert(response.status, "Failed to fetch repository contents. Please check the URL.");
             }
         } catch (err) {
-            setError("An error occurred while fetching the files.");
+            showAlert(500, "An error occurred while fetching the files.");
             console.error(err);
         }
     };
@@ -115,6 +118,7 @@ const UserProjectsComponent = (callback, deps) => {
                 await AuthService.refreshToken();
                 return handleFileOpen(file)
             } else {
+                showAlert(401, "Invalid response data format")
                 throw new Error("Invalid response data format");
             }
 
@@ -200,16 +204,13 @@ const UserProjectsComponent = (callback, deps) => {
                                 <div>
                                     <img className={"projects-file-icons"} src={FileIcon} alt={"file-icon" + index.toString()}/>
                                 </div>
-                                <h3>{project.Filename.length > 15 ? (project.Filename.slice(0, 15) + "...") : (project.Filename)}</h3>
+                                <h3 title={project.Filename}>{project.Filename.length > 15 ? (project.Filename.slice(0, 15) + "...") : (project.Filename)}</h3>
                                 <p>{new Date(project.CreatedAt).toISOString().slice(0, 10)}</p>
                                 <button className={"projects-file-buttons"} onClick={() => handleFileOpen(project)}>Open</button>
                             </div>
                         ))
                     ) : (
-                        <p>loading projects...
-                            {error && <p style={{color: "red"}}>{error}</p>}
-                        </p>
-
+                        <p>loading projects...</p>
                     )}
                 </div>
             </div>

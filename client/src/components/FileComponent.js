@@ -4,12 +4,17 @@ import { marked } from "marked";
 import "../css/FilePageStyles.css";
 import SaveIcon from "../assets/images/save-file-icon.png"
 import DownloadIcon from "../assets/images/download-file-icon.png"
+import EditIcon from "../assets/images/edit-filname-icon.png"
+import TickIcon from "../assets/images/tick-icon.png"
 import AuthService from "../services/AuthService";
+import {useAlert} from "../services/AlertContext";
 
 const FileComponent = () => {
     const [files, setFiles] = useState([]);
+    const [isReadOnly, setIsReadOnly] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         marked.setOptions({
@@ -62,9 +67,8 @@ const FileComponent = () => {
 
             // Создаём FormData для отправки файла и других данных
             const formData = new FormData();
-            formData.append('file', new Blob([file.md], { type: 'text/markdown' }), file.name); // Добавляем файл
+            formData.append('file', new Blob([file.md], { type: 'text/markdown' })); // Добавляем файл
             formData.append('filename', file.name);
-
             const response = await fetch(`http://localhost:8080/api/add/file`, {
                 method: 'POST',
                 headers: {
@@ -77,12 +81,13 @@ const FileComponent = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log("File saved successfully:", result);
+                showAlert(response.status, result.message)
             } else if (response.status === 401) {
                 await AuthService.refreshToken();
                 return handleSaveFile(file);
             } else {
-                console.error(`Error saving file: ${response.status} - ${response.statusText}`);
+                const result = await response.json();
+                showAlert(response.status, result.error)
             }
         } catch (error) {
             console.error("Error while saving file:", error);
@@ -94,22 +99,51 @@ const FileComponent = () => {
         <div>
             {files.map((file, index) => (
                 <div className="file-container">
-                    <div className="file-name-block">
-                        <p className={"navigate-back-button"} onClick={() => {navigate("/projects")}}>Back</p>
-                        <h3 className={"file-name"} key={index}>{file.name}</h3>
-                        <div className={"file-save-actions"}>
-                            <button onClick={() => {handleSaveFile(file).catch(error => {console.log(error)})}}>
-                                Save <img
-                                    key={index}
-                                    className={"save-actions-icons"}
-                                    src={SaveIcon}
-                                    alt={"save-icon" + index.toString()}
-                                />
+                    <div className="file-header-block">
+                        { index === 0 ? (<button className={"navigate-back-button"} onClick={() => {navigate(-1)}}>Back</button>) : null}
+                        <div className={"file-name-container"}>
+                            <input
+                                className={"file-name"}
+                                key={index}
+                                value={file.name}
+                                readOnly={isReadOnly}
+                                onChange={(e) => {
+                                    setFiles((prevFiles) => {
+                                        const updatedFiles = [...prevFiles];
+                                        updatedFiles[index].name = e.target.value;
+                                        return updatedFiles;
+                                    })
+                                }}
+                                placeholder={"automatically generate"}
+                            />
+                            <button className={"edit-filename-button"} onClick={() => {setIsReadOnly(!isReadOnly)}}>
+                                {isReadOnly ? (
+                                    <img key={index} className={"edit-filename-image"} src={EditIcon} alt={"edit"}/>
+                                ) : (
+                                    <img key={index} className={"edit-filename-image"} src={TickIcon} alt={"edit"}/>
+                                )}
                             </button>
-                            <button onClick={() => {handleDownloadFile(file)}}>
-                                 Download <img
-                                    key={index}
-                                    className={"save-actions-icons"}
+                        </div>
+
+                        <div className={"file-save-actions"}>
+                            <button onClick={() => {
+                                handleSaveFile(file).catch(error => {
+                                    console.log(error)
+                                })
+                            }}>
+                                Save <img
+                                key={index}
+                                className={"save-actions-icons"}
+                                src={SaveIcon}
+                                alt={"save-icon" + index.toString()}
+                            />
+                            </button>
+                            <button onClick={() => {
+                                handleDownloadFile(file)
+                            }}>
+                                Download <img
+                                key={index}
+                                className={"save-actions-icons"}
                                     src={DownloadIcon}
                                     alt={"download-icon" + index.toString()}
                                 />

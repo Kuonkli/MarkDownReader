@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../services/AlertContext";
 import "../css/MainPageStyles.css";
 
 const MainPageComponent = () => {
     const navigate = useNavigate();
     const [repoLink, setRepoLink] = useState("");
     const [error, setError] = useState("");
+    const { showAlert } = useAlert();
 
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState("");
@@ -57,6 +59,8 @@ const MainPageComponent = () => {
                 });
 
             if (response.ok) {
+                const result = await response.json();
+                showAlert(response.status, result.message)
                 const accessToken = response.headers.get("Authorization")?.split(" ")[1];
                 const refreshToken = response.headers.get("x-refresh-token");
 
@@ -70,18 +74,18 @@ const MainPageComponent = () => {
                 }
             } else {
                 const errorData = await response.json();
-                setAuthError(errorData.error || "An error occurred");
+                showAlert(response.status, errorData.error || "An error occurred");
             }
         } catch (err) {
             console.error(err);
-            setAuthError("An error occurred while processing your request.");
+            showAlert(500, "An error occurred while processing your request.");
         }
     };
 
     const fetchFiles = async () => {
         try {
             if (!repoLink) {
-                setError("Please enter a valid repository link.");
+                showAlert(400, "Please enter a valid repository link.")
                 return;
             }
             setError("");
@@ -94,7 +98,7 @@ const MainPageComponent = () => {
                 const mdFiles = files.filter((file) => file.name.endsWith(".md"));
 
                 if (mdFiles.length === 0) {
-                    setError("No Markdown files found in the repository.");
+                    showAlert(0, "No Markdown files found in the repository.")
                     return;
                 }
 
@@ -108,10 +112,10 @@ const MainPageComponent = () => {
 
                 navigate("/file", { state: { files: contents } }); // Передаём массив файлов
             } else {
-                setError("Failed to fetch repository contents. Please check the URL.");
+                showAlert(response.status, "Failed to fetch repository contents. Please check the URL.");
             }
         } catch (err) {
-            setError("An error occurred while fetching the files.");
+            showAlert(500, "An error occurred while fetching the files.");
             console.error(err);
         }
     };
