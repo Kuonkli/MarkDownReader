@@ -32,7 +32,7 @@ func (s *APIServer) Run() error {
 
 	api := router.Group("/api", handlers.AuthMiddleware())
 	{
-		api.Static("/markdown-storage", "./markdown-storage")
+		api.GET("/verify", handlers.Verification)
 		get := api.Group("/get")
 		{
 			get.GET("/profile", handlers.GetProfileHandler)
@@ -42,10 +42,16 @@ func (s *APIServer) Run() error {
 		add := api.Group("/add")
 		{
 			add.POST("/file", handlers.PostMDFileHandler)
+			add.POST("/comment", handlers.PostCommentHandler)
 		}
 		edit := api.Group("/edit")
 		{
 			edit.PUT("/file_name", handlers.UpdateFileNameHandler)
+			edit.PUT("/comment", handlers.UpdateCommentHandler)
+		}
+		del := api.Group("/delete")
+		{
+			del.DELETE("/comment", handlers.DeleteCommentHandler)
 		}
 	}
 
