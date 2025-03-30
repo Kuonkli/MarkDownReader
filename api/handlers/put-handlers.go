@@ -10,9 +10,15 @@ import (
 )
 
 func UpdateFileNameHandler(c *gin.Context) {
-	userId, exists := c.Get("userID")
+	userIDValue, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userID, ok := userIDValue.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid user ID type"})
 		return
 	}
 
@@ -31,7 +37,7 @@ func UpdateFileNameHandler(c *gin.Context) {
 	}
 
 	var markdownFile models.MarkdownFile
-	if err := db.DB.Where("id = ? AND user_id = ?", requestBody.FileId, userId).First(&markdownFile).Error; err != nil {
+	if err := db.DB.Where("id = ? AND user_id = ?", requestBody.FileId, userID).First(&markdownFile).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
 			return
@@ -54,4 +60,40 @@ func UpdateFileNameHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "file name updated successfully", "file": markdownFile})
+}
+
+func UpdateCommentHandler(c *gin.Context) {
+	userIDValue, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userID, ok := userIDValue.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid user ID type"})
+		return
+	}
+	var req models.Comment
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
+		return
+	}
+	if userID != req.UserID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "user does not have rights to change"})
+		return
+	}
+
+	if err := db.DB.Model(&models.Comment{}).
+		Where("id = ? AND user_id = ?", req.ID, userID).
+		Updates(map[string]interface{}{
+			"type":       req.Type,
+			"title":      req.Title,
+			"content":    req.Content,
+			"position_x": req.PositionX,
+			"position_y": req.PositionY,
+		}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update comment", "details": err.Error()})
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "comment updated successfully", "comment": req})
 }
