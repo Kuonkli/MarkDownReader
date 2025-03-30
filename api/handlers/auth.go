@@ -122,12 +122,12 @@ func Login(c *gin.Context) {
 
 	var user models.User
 	if err := db.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid password or email"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid password or email"})
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid password or email"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid password or email"})
 		return
 	}
 
