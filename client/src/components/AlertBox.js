@@ -5,7 +5,7 @@ import DefaultIcon from "../assets/images/alert-default-icon.png"
 
 const AlertBox = ({status, message}) => {
     const getStatusClass = () => {
-        if (status >= 200 && status < 400) {
+        if (status >= 200 && status < 300) {
             return "alert-success";
         } else if (status >= 400) {
             return "alert-error";

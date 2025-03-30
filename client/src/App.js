@@ -5,8 +5,8 @@ import FileComponent from "./components/FileComponent";
 import UserProjectsComponent from "./components/UserProjectsComponent";
 import Background from './components/BackgroundComponent';
 import UserProfileComponent from './components/UserProfileComponent';
-import AlertBox from "./components/AlertBox";
-import {AlertProvider, useAlert} from "./services/AlertContext";
+import {AlertProvider} from "./services/AlertContext";
+import UserFileComponent from "./components/UserFileComponent";
 
 const App = () => {
     return (
@@ -17,6 +17,7 @@ const App = () => {
                     <Route path="/" element={<MainPageComponent />} />
                     <Route path="/file" element={<FileComponent />} />
                     <Route path="/projects" element={<UserProjectsComponent />} />
+                    <Route path="/projects/:id" element={<UserFileComponent />} />
                     <Route path="/profile" element={<UserProfileComponent />} />
                 </Routes>
             </Router>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import { marked } from "marked";
+import {marked} from "marked";
 import "../css/FilePageStyles.css";
 import SaveIcon from "../assets/images/save-file-icon.png"
 import DownloadIcon from "../assets/images/download-file-icon.png"
@@ -8,23 +8,22 @@ import EditIcon from "../assets/images/edit-filname-icon.png"
 import TickIcon from "../assets/images/tick-icon.png"
 import AuthService from "../services/AuthService";
 import {useAlert} from "../services/AlertContext";
+import axios from "axios";
 
 const FileComponent = () => {
     const [files, setFiles] = useState([]);
     const [isReadOnly, setIsReadOnly] = useState(true);
+    const [isLogin, setIsLogin] = useState(false)
     const location = useLocation();
     const navigate = useNavigate();
     const { showAlert } = useAlert();
+
 
     useEffect(() => {
         marked.setOptions({
             gfm: true,
             breaks: true,
             walkTokens: (token) => {
-                /*
-                if (token.type === 'blockquote') {
-                    console.log(token);
-                }*/
                 if (token.raw === '[!CAUTION]' && token.type === 'text') {
                     token.text = 'CAUTION';
                 }
@@ -44,9 +43,36 @@ const FileComponent = () => {
             }));
             setFiles(filesWithHtml);
         } else {
+            showAlert(500, "No files found")
             console.error("No files found");
         }
+
+        verification()
+
     }, [location.state]);
+
+    const verification = () => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get(`http://localhost:8080/api/verify`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }).then(res => {
+            if (res.status === 200) {
+                setIsLogin(true)
+            }
+        }).catch(error => {
+            if (error.response?.status === 401) {
+                AuthService.refreshToken().then(() => {
+                    verification()
+                }).catch(() => {
+                    setIsLogin(false)
+                });
+            } else {
+                setIsLogin(false)
+            }
+        })
+    }
 
     // Обработчик для загрузки файла
     const handleDownloadFile = (file) => {
@@ -54,7 +80,7 @@ const FileComponent = () => {
         const url = URL.createObjectURL(blob); // Генерируем временный URL для Blob
         const link = document.createElement("a"); // Создаём временный элемент <a>
         link.href = url;
-        link.download = file.name; // Указываем имя загружаемого файла
+        link.download = file.name.endsWith(".md") ? (file.name) : "md_project.md"; // Указываем имя загружаемого файла
         document.body.appendChild(link);
         link.click(); // Запускаем скачивание
         document.body.removeChild(link); // Удаляем временный элемент
@@ -67,33 +93,46 @@ const FileComponent = () => {
 
             // Создаём FormData для отправки файла и других данных
             const formData = new FormData();
-            formData.append('file', new Blob([file.md], { type: 'text/markdown' })); // Добавляем файл
+            formData.append('file', new Blob([file.md], { type: 'text/markdown' }));
             formData.append('filename', file.name);
-            const response = await fetch(`http://localhost:8080/api/add/file`, {
-                method: 'POST',
+
+            // Отправляем запрос с FormData
+            const response = await axios.post(`http://localhost:8080/api/add/file`, formData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
-                body: formData,
             });
 
             console.log("Server response:", response);
+            showAlert(response.status, response.data.message);
 
-            if (response.ok) {
-                const result = await response.json();
-                showAlert(response.status, result.message)
-            } else if (response.status === 401) {
-                await AuthService.refreshToken();
-                return handleSaveFile(file);
-            } else {
-                const result = await response.json();
-                showAlert(response.status, result.error)
-            }
         } catch (error) {
-            console.error("Error while saving file:", error);
+            console.error("Ошибка при запросе:", error);
+
+            if (error.status === 401) {
+                try {
+                    await AuthService.refreshToken();
+                    await handleSaveFile(file);
+                } catch (refreshError) {
+                    console.error("Ошибка при обновлении токена:", refreshError);
+
+                    navigate("/", {
+                        state: {
+                            error: {
+                                status: refreshError.status || 500,
+                                message: refreshError.message || "Authorization error",
+                            },
+                        },
+                    });
+                }
+            } else {
+                showAlert(
+                    error.status || 500,
+                    error.message || "Undefined error occurred"
+                );
+            }
         }
     };
-
 
     return (
         <div>
@@ -126,18 +165,20 @@ const FileComponent = () => {
                         </div>
 
                         <div className={"file-save-actions"}>
-                            <button onClick={() => {
-                                handleSaveFile(file).catch(error => {
-                                    console.log(error)
-                                })
-                            }}>
-                                Save <img
-                                key={index}
-                                className={"save-actions-icons"}
-                                src={SaveIcon}
-                                alt={"save-icon" + index.toString()}
-                            />
-                            </button>
+                            {isLogin ? (
+                                <button onClick={() => {
+                                    handleSaveFile(file).catch(error => {
+                                        console.log(error)
+                                    })
+                                }}>
+                                    Save <img
+                                    key={index}
+                                    className={"save-actions-icons"}
+                                    src={SaveIcon}
+                                    alt={"save-icon" + index.toString()}
+                                />
+                                </button>
+                            ) : null}
                             <button onClick={() => {
                                 handleDownloadFile(file)
                             }}>
@@ -151,7 +192,11 @@ const FileComponent = () => {
                         </div>
                     </div>
                     <div key={index} className="markdown-box">
-                        <div className={"file-content"} dangerouslySetInnerHTML={{__html: file.html}}/>
+                        <div
+                            key={index}
+                            className={"file-content"}
+                            dangerouslySetInnerHTML={{__html: file.html}}
+                        />
                     </div>
                 </div>
             ))}

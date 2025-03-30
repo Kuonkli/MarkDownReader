@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import { useAlert } from "../services/AlertContext";
 import "../css/MainPageStyles.css";
+import axios from "axios";
 
 const MainPageComponent = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [repoLink, setRepoLink] = useState("");
-    const [error, setError] = useState("");
+    let [error, setError] = useState("");
     const { showAlert } = useAlert();
 
     const [isLogin, setIsLogin] = useState(true);
@@ -37,48 +39,52 @@ const MainPageComponent = () => {
         if (localStorage.getItem('accessToken')) {
             navigate("/projects");
         }
+        if (location.state?.error) {
+            const { status, message } = location.state.error;
+            showAlert(status, message);
+            navigate(location.pathname, { state: {}});
+        }
     }, [navigate]);
 
     const handleAuthSubmit = async (event) => {
         event.preventDefault();
         try {
             const response = isLogin
-                ? await fetch("http://localhost:8080/login", {
+                ? await axios.post("http://localhost:8080/login", { email, password }, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ email, password }),
                 })
-                : await fetch("http://localhost:8080/signup", {
+                : await axios.post("http://localhost:8080/signup", { nickname, email, password }, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ nickname, email, password }),
                 });
-
-            if (response.ok) {
-                const result = await response.json();
-                showAlert(response.status, result.message)
-                const accessToken = response.headers.get("Authorization")?.split(" ")[1];
-                const refreshToken = response.headers.get("x-refresh-token");
-
-                if (accessToken && refreshToken) {
-                    localStorage.setItem("accessToken", accessToken);
-                    localStorage.setItem("refreshToken", refreshToken);
-
-                    navigate("/projects"); // Перенаправление после успешного входа
-                } else {
-                    throw new Error("Token not provided");
-                }
+            console.log(response.data)
+            const accessToken = response.headers.get("Authorization")?.split(" ")[1];
+            const refreshToken = response.headers.get("X-Refresh-Token");
+            if (accessToken && refreshToken) {
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("refreshToken", refreshToken);
+                showAlert(response.status, response.data.message);
+                navigate("/projects");
             } else {
-                const errorData = await response.json();
-                showAlert(response.status, errorData.error || "An error occurred");
+                throw Error("Request Failed with status code 500")
             }
-        } catch (err) {
-            console.error(err);
-            showAlert(500, "An error occurred while processing your request.");
+        } catch (error) {
+            if (error.status === 400) {
+                showAlert(
+                    error.response?.status || 500,
+                    error.response.data?.error || "Undefined error occurred"
+                );
+            } else {
+                showAlert(
+                    error.response?.status || 500,
+                    error.response?.message || "Undefined error occurred"
+                );
+            }
         }
     };
 
@@ -88,7 +94,6 @@ const MainPageComponent = () => {
                 showAlert(400, "Please enter a valid repository link.")
                 return;
             }
-            setError("");
 
             const apiUrl = repoLink.replace("https://github.com", "https://api.github.com/repos") + "/contents";
             const response = await fetch(apiUrl);
@@ -98,7 +103,7 @@ const MainPageComponent = () => {
                 const mdFiles = files.filter((file) => file.name.endsWith(".md"));
 
                 if (mdFiles.length === 0) {
-                    showAlert(0, "No Markdown files found in the repository.")
+                    showAlert(103, "No Markdown files found in the repository.")
                     return;
                 }
 
