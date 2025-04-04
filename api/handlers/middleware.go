@@ -11,7 +11,7 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
+		if authHeader == "" || len(authHeader) <= len("Bearer ") {
 			log.Println("Missing access token")
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing access token"})
 			c.Abort()

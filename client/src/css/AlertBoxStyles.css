@@ -1,0 +1,66 @@
+.alert-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: fixed;
+    bottom: 20px;
+    right: 1%;
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 2rem;
+    animation: fadeIn 0.3s ease, fadeOut 0.3s ease 3s;
+}
+
+.alert-container img {
+    width: 2rem;
+    transform: translateY(-0.1rem);
+}
+
+.alert-success {
+    border: 2px solid #4caf50;
+}
+
+.alert-error {
+    border: 2px solid #f44336;
+}
+
+.alert-default {
+    border: 2px solid #607d8b;
+}
+
+.alert-message {
+    margin: 0;
+    padding: 0;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+}

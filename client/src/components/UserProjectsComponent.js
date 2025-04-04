@@ -1,40 +1,59 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect} from "react";
 import "../css/UserProjectsStyles.css";
 import {Link, useNavigate} from "react-router-dom";
 import AuthService from "../services/AuthService";
+import Preloader from "./Preloader";
 import ProfileIcon from "../assets/images/user-icon.png";
 import FileIcon from "../assets/images/file-icon.png";
+import { useAlert } from "../services/AlertContext";
+import axios from "axios";
 
-const UserProjectsComponent = (callback, deps) => {
+
+const UserProjectsComponent = () => {
     const [repoLink, setRepoLink] = useState("");
-    const [error, setError] = useState("");
     const [projects, setProjects] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
+    const { showAlert } = useAlert();
 
-    const fetchProjects = useCallback(async (url) => {
+    const fetchProjects = async (url) => {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-            const response = await fetch(url, {
+            const accessToken = localStorage.getItem("accessToken");
+            const response = await axios.get(url, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
+                    Authorization: `Bearer ${accessToken}`,
+                },
             });
-            console.log("Server response:", response);
-
-            if (response.ok) {
-                const files = await response.json();
-                setProjects(files.files);
-            } else if (response.status === 401) {
-                await AuthService.refreshToken();
-                return fetchProjects(url)
-            } else {
-                throw new Error("Invalid response data format");
-            }
+            console.log(response)
+            setProjects(response.data.files);
+            setIsLoading(false);
         } catch (error) {
-            console.error("Error while fetching projects:", error);
-            await AuthService.refreshToken();
+            console.error("Ошибка при запросе проектов:", error);
+
+            if (error.response?.status === 401) {
+                try {
+                    await AuthService.refreshToken();
+                    await fetchProjects(url);
+                } catch (refreshError) {
+                    console.error("Ошибка при обновлении токена:", refreshError);
+
+                    navigate("/", {
+                        state: {
+                            error: {
+                                status: refreshError.status || 500,
+                                message: refreshError.message || "Authorization error",
+                            },
+                        },
+                    });
+                }
+            } else {
+                showAlert(
+                    error.status || 500,
+                    error.message || "Undefined error occurred"
+                );
+            }
         }
-    }, [])
+    };
 
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -55,18 +74,17 @@ const UserProjectsComponent = (callback, deps) => {
         }
     };
 
-    useEffect(() => {
+    useEffect( () => {
         const apiUrl = "http://localhost:8080/api/get/files";
-        fetchProjects(apiUrl).catch((err) => {console.error(err)});
-    }, [fetchProjects]);
+        fetchProjects(apiUrl);
+    }, []);
 
     const fetchFiles = async () => {
         try {
             if (!repoLink) {
-                setError("Please enter a valid repository link.");
+                showAlert(400, "Please enter a valid repository link.")
                 return;
             }
-            setError("");
 
             const apiUrl = repoLink.replace("https://github.com", "https://api.github.com/repos") + "/contents";
             const response = await fetch(apiUrl);
@@ -76,7 +94,7 @@ const UserProjectsComponent = (callback, deps) => {
                 const mdFiles = files.filter((file) => file.name.endsWith(".md"));
 
                 if (mdFiles.length === 0) {
-                    setError("No Markdown files found in the repository.");
+                    showAlert(0, "No Markdown files found in the repository.")
                     return;
                 }
 
@@ -90,39 +108,13 @@ const UserProjectsComponent = (callback, deps) => {
 
                 navigate("/file", { state: { files: contents } }); // Передаём массив файлов
             } else {
-                setError("Failed to fetch repository contents. Please check the URL.");
+                showAlert(response.status, "Failed to fetch repository contents. Please check the URL.");
             }
         } catch (err) {
-            setError("An error occurred while fetching the files.");
+            showAlert(500, "An error occurred while fetching the files.");
             console.error(err);
         }
     };
-
-    const handleFileOpen = async (file) => {
-        try {
-            const accessToken = localStorage.getItem('accessToken');
-            const response = await fetch(`http://localhost:8080/api/${file.FileURL}`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            });
-            console.log("Server response:", response);
-            if (response.ok) {
-                const markdownContent = await response.text();
-                const contents = [{ name: file.Filename, content: markdownContent }]
-                navigate("/file", { state : { files: contents } });
-            } else if (response.status === 401) {
-                await AuthService.refreshToken();
-                return handleFileOpen(file)
-            } else {
-                throw new Error("Invalid response data format");
-            }
-
-        } catch (error) {
-            console.error("Error while fetching projects:", error);
-            await AuthService.refreshToken();
-        }
-    }
 
     return (
         <div>
@@ -135,7 +127,6 @@ const UserProjectsComponent = (callback, deps) => {
                             value={repoLink}
                             onChange={(e) => {
                                 setRepoLink(e.target.value);
-                                setError("");
                             }}
                             placeholder="Paste your repo link..."
                         />
@@ -193,25 +184,22 @@ const UserProjectsComponent = (callback, deps) => {
                 </div>
             </header>
             <div className={"projects-container"}>
-                <div className="projects-grid">
-                    {projects.length > 0 ? (
-                        projects.map((project, index) => (
-                            <div key={index} className="project-card">
-                                <div>
-                                    <img className={"projects-file-icons"} src={FileIcon} alt={"file-icon" + index.toString()}/>
-                                </div>
-                                <h3>{project.Filename.length > 15 ? (project.Filename.slice(0, 15) + "...") : (project.Filename)}</h3>
-                                <p>{new Date(project.CreatedAt).toISOString().slice(0, 10)}</p>
-                                <button className={"projects-file-buttons"} onClick={() => handleFileOpen(project)}>Open</button>
+                {projects.length > 0 ? (
+                    <div className="projects-grid">
+                        {projects.map((project, index) => (
+                        <div key={project.ID} className="project-card">
+                            <div>
+                                <img className={"projects-file-icons"} src={FileIcon} alt={"file-icon" + project.ID.toString()}/>
                             </div>
-                        ))
-                    ) : (
-                        <p>loading projects...
-                            {error && <p style={{color: "red"}}>{error}</p>}
-                        </p>
+                            <h3 title={project.filename}>{project.filename.length > 15 ? (project.filename.slice(0, 15) + "...") : (project.filename)}</h3>
+                            <p>{new Date(project.CreatedAt).toISOString().slice(0, 10)}</p>
+                            <button className={"projects-file-buttons"} onClick={() => navigate(`/projects/${project.ID}`)}>Open</button>
+                        </div>
+                        ))}
+                    </div>
+                    ) : (isLoading ? (<Preloader />) : (<p className={"zero-projects-placeholder"}>You don't have any saved projects yet</p>))
+                }
 
-                    )}
-                </div>
             </div>
         </div>
     );

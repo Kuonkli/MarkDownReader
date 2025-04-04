@@ -1,14 +1,16 @@
-import {useCallback, useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import EmailIcon from '../assets/images/email-icon.png'
 import ProfileIcon from '../assets/images/user-icon.png'
 import PasswordIcon from '../assets/images/password-icon.png'
 import CalendarIcon from '../assets/images/calendar-icon.png'
 import '../css/UserProfileStyles.css'
 import {useNavigate} from "react-router-dom";
+import { useAlert } from '../services/AlertContext';
 import AuthService from "../services/AuthService";
+import axios from "axios";
 
 
-function UserProfile() {
+const UserProfile = () => {
     const [userData, setUserData] = useState({
         Nickname: 'JohnDoe',
         Email: 'john.doe@example.com',
@@ -16,31 +18,46 @@ function UserProfile() {
         CreatedAt: '30.02.2077'
     })
     const navigate = useNavigate()
+    const showAlert = useAlert();
 
-    const fetchProfile = useCallback(async (url) => {
+    const fetchProfile = async (url) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await fetch(url, {
+            const response = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }
             });
             console.log("Server response:", response);
+            setUserData(response.data.user);
 
-            if (response.ok) {
-                const userProfile = await response.json();
-                setUserData(userProfile.user);
-            } else if (response.status === 401) {
-                await AuthService.refreshToken();
-                return fetchProfile(url)
-            } else {
-                throw new Error("Invalid response data format");
-            }
         } catch (error) {
-            console.error("Error while fetching projects:", error);
-            await AuthService.refreshToken();
+            console.error("Ошибка при запросе проектов:", error);
+
+            if (error.status === 401) {
+                try {
+                    await AuthService.refreshToken();
+                    await fetchProfile(url);
+                } catch (refreshError) {
+                    console.error("Ошибка при обновлении токена:", refreshError);
+
+                    navigate("/", {
+                        state: {
+                            error: {
+                                status: refreshError.status || 500,
+                                message: refreshError.message || "Authorization error",
+                            },
+                        },
+                    });
+                }
+            } else {
+                showAlert(
+                    error.status || 500,
+                    error.message || "Undefined error occurred"
+                );
+            }
         }
-    }, [])
+    }
 
     const handleLogout = () => {
         AuthService.clearTokens()
@@ -53,8 +70,8 @@ function UserProfile() {
 
     useEffect(() => {
         const apiUrl = "http://localhost:8080/api/get/profile";
-        fetchProfile(apiUrl).catch((err) => {console.error(err)});
-    }, [fetchProfile]);
+        fetchProfile(apiUrl).finally();
+    }, []);
 
     return (
         <div className="profile-container">
@@ -117,10 +134,10 @@ function UserProfile() {
                 </div>
 
                 <div className="profile-actions">
-                    <button onClick={handleHome} className="home-btn">
+                    <button onClick={handleHome} className="profile-buttons home-btn">
                         Home
                     </button>
-                    <button onClick={handleLogout} className="logout-btn">
+                    <button onClick={handleLogout} className="profile-buttons logout-btn">
                         Logout
                     </button>
                 </div>

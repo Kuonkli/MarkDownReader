@@ -9,36 +9,138 @@
 }
 
 .markdown-box {
+    grid-column: 2;
+    position: relative;
     width: 100%;
     max-width: 900px;
+    min-width: 500px;
     min-height: 300px;
     background-color: #ffffff;
     border: 2px solid #000000;
     border-radius: 0.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
     padding: 2rem;
     overflow: auto;
     font-family: "Arial", sans-serif;
     font-size: 16px;
     line-height: 2;
     color: #333333;
+    flex: 1;
 }
+
 .markdown-box img {
     max-width: 100%; /* Изображение не превысит ширину контейнера */
     max-height: 100%; /* Изображение не превысит высоту контейнера */
 }
-.file-name-block{
+
+.md-comment-block {
+    display: grid; /* Включаем Grid */
+    grid-template-columns: 1fr auto 1fr; /* Сетка с колонками: слева, центр, справа */
+    gap: 1vw; /* Расстояние между колонками */
+    align-items: start; /* Выравнивание элементов сверху */
+}
+
+.comment-settings {
+    grid-column: 3;
+    position: sticky; /* Абсолютное позиционирование кнопки */
+    right: 0; /* Расстояние кнопки от markdown-box */
+    top: 20px; /* Расстояние сверху */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.comment-actions-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    animation: commentsMenuFadeIn 0.5s;
+}
+
+@keyframes commentsMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.comment-actions-menu-button {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    padding: 0.5rem 1rem;
+}
+
+.comment-actions-menu-button img {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.file-content {
+    position: relative;
+    z-index: 999;
+}
+
+.comments-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.file-header-block{
     width: 100%;
     max-width: 900px;
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 0.8rem;
 }
+
+.file-name-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
 .file-name {
-    color: #ffffff
-    
+    color: #ffffff;
+    flex: 0.5;
+    text-align: center;
+    font-weight: bold;
+    margin: 0 0 0 0;
+}
+
+.file-name:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.edit-filename-button {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    padding: 0.5rem 1rem;
+}
+
+.edit-filename-image {
+    width: 1.75rem;
 }
 
 .file-save-actions {
@@ -55,16 +157,21 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
+    padding: 0.5rem 1.5rem;
 }
 
 .save-actions-icons {
-    width: 1.5rem;
+    width: 1.75rem;
 }
 
 .navigate-back-button {
-    color: white;
-    text-decoration: underline;
-    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    padding: 0.75rem 1.75rem;
 }
 
 .navigate-back-button:hover {
@@ -92,6 +199,10 @@
     border-bottom: 1px solid lightgray;
 }
 
+.markdown-box p {
+    margin: 0.5rem 0;
+}
+
 blockquote {
     border-left: 5px solid #942d86;
     margin: 1vw 0;
@@ -111,7 +222,8 @@ code {
     border-radius: 5px;
     display: inline-block;
     background: lightgray;
-    padding: 0 0.2rem 0 0.2rem;
+    padding: 0 0.2rem;
+    margin: 0.2rem 0;
     white-space: pre-wrap; /* Сохраняет пробелы и переносы */
     word-break: break-all; /* Принудительно переносит длинные слова */
 }
