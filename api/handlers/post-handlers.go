@@ -137,7 +137,22 @@ func PostCommentHandler(c *gin.Context) {
 		MarkdownFileID: uint(fileID),
 	}
 
+	validTypes := map[string]bool{
+		"info":    true,
+		"warning": true,
+		"error":   true,
+	}
+
+	if !validTypes[comment.Type] {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid comment type: %s", comment.Type)})
+		return
+	}
+
 	if err := db.DB.Create(&comment).Error; err != nil {
+		if strings.Contains(err.Error(), "SQLSTATE 23514") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid comment type: %s", comment.Type)})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create comment"})
 		return
 	}

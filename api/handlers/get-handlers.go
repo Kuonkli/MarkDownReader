@@ -110,3 +110,25 @@ func GetProfileHandler(c *gin.Context) {
 		"user": user,
 	})
 }
+
+func GetAllCommentsHandler(c *gin.Context) {
+	userId, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
+		return
+	}
+	var comments []models.Comment
+	if err := db.DB.
+		Where("comments.user_id = ?", userId).
+		Preload("MarkdownFile").
+		Joins("JOIN markdown_files ON comments.markdown_file_id = markdown_files.id").
+		Order("markdown_files.id").
+		Find(&comments).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch comments"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"comments": comments,
+	})
+}

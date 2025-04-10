@@ -1,6 +1,8 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {marked} from "marked";
+import {toNumber} from "lodash";
+import axios from "axios";
 import "../css/FilePageStyles.css";
 import SaveIcon from "../assets/images/save-file-icon.png"
 import DownloadIcon from "../assets/images/download-file-icon.png"
@@ -14,14 +16,15 @@ import SaveCommentsIcon from "../assets/images/save-comments-icon.png"
 import AuthService from "../services/AuthService";
 import {useAlert} from "../services/AlertContext";
 import {apiToClientComment, clientToApiComment} from "../utils/Converters.ts";
-import axios from "axios";
 import CommentBox from "./CommentComponent";
+
 
 const UserFileComponent = () => {
     const [file, setFile] = useState({});
     const [isReadOnly, setIsReadOnly] = useState(true);
     const [comments, setComments] = useState([]);
     const [activeCommentId, setActiveCommentId] = useState(null);
+    const [targetCommentId, setTargetCommentId] = useState(null)
     const [commentsMenuVisibility, setCommentsMenuVisibility] = useState(false);
     const [commentsVisibility, setCommentsVisibility] = useState(false);
 
@@ -30,7 +33,26 @@ const UserFileComponent = () => {
     const navigate = useNavigate();
     const { showAlert } = useAlert();
     const overlayRef = useRef(null);
+    const { search } = useLocation();
 
+    useEffect(() => {
+        if (targetCommentId === null) {
+            return
+        }
+        if (comments.length > 0) {
+            if (targetCommentId) {
+                setCommentsVisibility(true);
+                const comment = comments.find(c => toNumber(targetCommentId) === c.id);
+                if (comment) {
+                    window.scrollTo({
+                        top: comment.position.y,
+                        behavior: "smooth",
+                    })
+                    showAlert(100, "Comment was found successfully")
+                }
+            }
+        }
+    }, [search, targetCommentId]);
 
     const handleAddComment =  async () => {
         try {
@@ -42,6 +64,7 @@ const UserFileComponent = () => {
             };
             const accessToken = localStorage.getItem('accessToken');
             const comment = clientToApiComment(newComment)
+            console.log(comment)
             const response = await axios.post(`http://localhost:8080/api/add/comment?file_id=${file.id}`, comment, {
                 method: "POST",
                 headers: {
@@ -118,6 +141,7 @@ const UserFileComponent = () => {
     const handleEditComment = async (comment) => {
         try {
             comment = clientToApiComment(comment);
+            console.log(comment)
             const accessToken = localStorage.getItem('accessToken');
             await axios.put(`http://localhost:8080/api/edit/comment`, comment,  {
                 headers: {
@@ -151,6 +175,13 @@ const UserFileComponent = () => {
         }
     }
 
+    const handleTarget = async () => {
+        const searchParams = new URLSearchParams(search);
+        const commentId = toNumber(searchParams.get('aim'));
+        if (commentId !== undefined) {
+            setTargetCommentId(commentId)
+        }
+    }
 
     useEffect(() => {
         marked.setOptions({
@@ -173,8 +204,8 @@ const UserFileComponent = () => {
             },
         })
         const fileId = params["id"]
-        fetchFile(`http://localhost:8080/api/get/file?file_id=${fileId}`).finally()
 
+        fetchFile(`http://localhost:8080/api/get/file?file_id=${fileId}`).finally(handleTarget)
     }, []);
 
     const fetchFile = async (url) => {
@@ -227,7 +258,6 @@ const UserFileComponent = () => {
         }
     }
 
-    // Обработчик для загрузки файла
     const handleDownloadFile = (file) => {
         const blob = new Blob([file.md], { type: "text/plain" }); // Создаём Blob-объект с содержимым файла
         const url = URL.createObjectURL(blob); // Генерируем временный URL для Blob
@@ -337,7 +367,7 @@ const UserFileComponent = () => {
                         </button>
                     </div>
                 </div>
-                <div className={"md-comment-block"}>
+                <div className={"file-main-wrapper"}>
                     <div className="markdown-box">
                         <div className={"comments-overlay"} ref={overlayRef}>
                             {commentsVisibility ? (comments.map((comment) => (
@@ -367,7 +397,7 @@ const UserFileComponent = () => {
                             dangerouslySetInnerHTML={{__html: file.html}}
                         />
                     </div>
-                    <div className={"comment-settings"}>
+                    <div className={"comments-toolbar"}>
                         <button className={"comment-actions-menu-button"} onClick={() => {setCommentsMenuVisibility(!commentsMenuVisibility)}}>
                             <img src={CommentsMenuIcon} alt={"comment-menu"}/>
                         </button>

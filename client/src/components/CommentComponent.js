@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Draggable from "react-draggable"
 import "../css/CommentStyles.css";
 import DeleteIcon from "../assets/images/delete-icon.png"
@@ -114,9 +114,9 @@ const CommentBox = ({ props, bounds, onPositionChange, onCommentChange, onDelete
                                 onChange={(e) => handleChange({type: e.target.value})}
                                 className="type-select"
                             >
-                                <option value="error">Error</option>
-                                <option value="warning">Warning</option>
                                 <option value="info">Info</option>
+                                <option value="warning">Warning</option>
+                                <option value="error">Error</option>
                             </select>
                         </div>
                         <textarea

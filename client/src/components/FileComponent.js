@@ -191,12 +191,13 @@ const FileComponent = () => {
                             </button>
                         </div>
                     </div>
-                    <div key={index} className="markdown-box">
-                        <div
-                            key={index}
-                            className={"file-content"}
-                            dangerouslySetInnerHTML={{__html: file.html}}
-                        />
+                    <div className="file-main-wrapper">
+                        <div className="markdown-box">
+                            <div
+                                className={"file-content"}
+                                dangerouslySetInnerHTML={{__html: file.html}}
+                            />
+                        </div>
                     </div>
                 </div>
             ))}

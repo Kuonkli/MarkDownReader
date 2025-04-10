@@ -43,8 +43,8 @@ export const clientToApiComment = (clientComment: ClientComment): Partial<ApiCom
     type: clientComment.type,
     title: clientComment.title,
     content: clientComment.content,
-    position_x: clientComment.position.x,
-    position_y: clientComment.position.y,
+    position_x: Math.floor(clientComment.position.x),
+    position_y: Math.floor(clientComment.position.y),
     ...(clientComment.id && { ID: clientComment.id }),
     ...(clientComment.userId && { user_id: clientComment.userId }),
     ...(clientComment.fileId && { markdown_file_id: clientComment.fileId })

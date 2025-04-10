@@ -58,6 +58,99 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.switch-content-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.switcher-button-container {
+    display: flex;
+    padding: 0 0.25rem;
+}
+
+.switcher-button-container.active {
+    border-bottom: 2px solid #8D38FF;
+}
+
+.switch-button {
+    background: none;
+    text-align: center;
+    padding: 0.5rem 1.5rem;
+}
+
+.switch-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transform: none;
+}
+
+.comments-list-container {
+    padding: 0 1rem;
+}
+
+.comments-grid-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.comments-grid-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr 8fr 2fr;
+    gap: 1rem;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem 1rem 0 0;
+}
+
+.comments-grid-body {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: none;
+    border-radius: 0 0 1rem 1rem;
+}
+
+.comment-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr 8fr 2fr;
+    gap: 1rem;
+    padding: 12px 15px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.comment-grid-row:last-child {
+    border-bottom: none;
+}
+
+.comment-cell {
+    padding: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.comment-icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.file-link {
+    color: #ba87fa;
+    text-decoration: none;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -97,7 +190,7 @@
     margin-top: auto;
 }
 
-.zero-projects-placeholder {
+.zero-content-placeholder {
     text-align: center;
     color: rgba(255, 255, 255, 0.3);
 }

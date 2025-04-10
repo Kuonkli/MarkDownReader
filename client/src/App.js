@@ -17,6 +17,7 @@ const App = () => {
                     <Route path="/" element={<MainPageComponent />} />
                     <Route path="/file" element={<FileComponent />} />
                     <Route path="/projects" element={<UserProjectsComponent />} />
+                    <Route path="/projects/comments" element={<UserProjectsComponent />} />
                     <Route path="/projects/:id" element={<UserFileComponent />} />
                     <Route path="/profile" element={<UserProfileComponent />} />
                 </Routes>

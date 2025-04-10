@@ -4,7 +4,7 @@ import ProfileIcon from '../assets/images/user-icon.png'
 import PasswordIcon from '../assets/images/password-icon.png'
 import CalendarIcon from '../assets/images/calendar-icon.png'
 import '../css/UserProfileStyles.css'
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAlert } from '../services/AlertContext';
 import AuthService from "../services/AuthService";
 import axios from "axios";
@@ -91,7 +91,7 @@ const UserProfile = () => {
                         </label>
                         <input
                             type="text"
-                            value={userData.Nickname}
+                            value={userData.nickname}
                             readOnly
                         />
                     </div>
@@ -103,7 +103,7 @@ const UserProfile = () => {
                         </label>
                         <input
                             type="email"
-                            value={userData.Email}
+                            value={userData.email}
                             readOnly
                         />
                     </div>

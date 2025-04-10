@@ -11,12 +11,13 @@
     font-family: Arial, sans-serif;
     font-size: 16px;
     color: #fff;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
     border-radius: 1rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     text-align: center;
     padding: 2rem;
+    max-width: 400px;
     animation: fadeIn 0.3s ease, fadeOut 0.3s ease 3s;
 }
 

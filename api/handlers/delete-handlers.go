@@ -25,7 +25,7 @@ func DeleteCommentHandler(c *gin.Context) {
 
 	userID, ok := userIDValue.(uint)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid user ID type"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID type"})
 		return
 	}
 
@@ -44,7 +44,7 @@ func DeleteCommentHandler(c *gin.Context) {
 		return
 	}
 
-	if err := db.DB.Delete(&comment).Error; err != nil {
+	if err := db.DB.Unscoped().Delete(&comment).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete comment"})
 		return
 	}

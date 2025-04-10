@@ -38,6 +38,7 @@ func (s *APIServer) Run() error {
 			get.GET("/profile", handlers.GetProfileHandler)
 			get.GET("/files", handlers.GetUserFiles)
 			get.GET("/file", handlers.GetFileHandler)
+			get.GET("comments", handlers.GetAllCommentsHandler)
 		}
 		add := api.Group("/add")
 		{
