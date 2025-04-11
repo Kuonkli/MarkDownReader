@@ -153,7 +153,7 @@
 .file-save-actions button {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border-radius: 1.5rem;
+    border-radius: 0.75rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
@@ -167,7 +167,7 @@
 .navigate-back-button {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border-radius: 1.5rem;
+    border-radius: 0.75rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
@@ -231,3 +231,73 @@ code {
 a {
     color: blue;
 }
+
+@media (min-width: 768px) {
+    .file-save-actions button span {
+        display: inline; /* Показываем текстовые labels */
+    }
+}
+
+@media (max-width: 767px) {
+    .file-save-actions button span {
+        display: none; /* Скрываем текстовые labels */
+    }
+    
+    .file-save-actions button img {
+        margin: 0; /* Убираем отступы у иконок */
+    }
+
+    .edit-filename-image {
+        width: 1rem;
+    }
+    .save-actions-icons {
+        width: 1rem;
+    }
+
+    .file-save-actions button {
+        border-radius: 0.75rem;
+        padding: 0.5rem 0.5rem;
+    }
+
+    .edit-filename-button {
+        padding: 0.5rem 0.5rem;
+        width: auto;
+    }
+    .navigate-back-button {
+
+        border-radius: 0.75rem;
+        width: auto;
+        padding: 0.5rem 0.5rem;
+        font-size: smaller;
+    }
+    .file-name {
+        color: #ffffff;
+        flex: 0.5;
+        font-size: smaller;
+        text-align: center;
+        font-weight: bold;
+        margin: 0 0 0 0;
+        padding-top: 0.5rem;
+        padding-bottom:  0.5rem;
+        min-width: 120px;
+       
+    }
+    .comment-actions-menu-button img {
+        width: 1rem;
+        height: 1rem;
+    }
+    .comment-actions-menu-button {
+        padding: 0.5rem 0.5rem;
+    }
+    .markdown-box {
+        width: 80vw;
+    }
+    .file-container {
+
+        padding: 1rem;
+
+    }
+    
+}
+
+

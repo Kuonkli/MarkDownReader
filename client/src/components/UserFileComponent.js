@@ -350,19 +350,21 @@ const UserFileComponent = () => {
                                 console.log(error)
                             })
                         }}>
-                            Save <img
-                            className={"save-actions-icons"}
-                            src={SaveIcon}
-                            alt={"save-icon"}
+                            <span>Save</span>
+                            <img
+                                className={"save-actions-icons"}
+                                src={SaveIcon}
+                                alt={"save-icon"}
                         />
                         </button>
                         <button onClick={() => {
                             handleDownloadFile(file)
                         }}>
-                            Download <img
-                            className={"save-actions-icons"}
-                            src={DownloadIcon}
-                            alt={"download-icon"}
+                            <span>Download</span>
+                            <img
+                                className={"save-actions-icons"}
+                                src={DownloadIcon}
+                                alt={"download-icon"}
                         />
                         </button>
                     </div>

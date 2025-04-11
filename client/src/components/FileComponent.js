@@ -171,20 +171,22 @@ const FileComponent = () => {
                                         console.log(error)
                                     })
                                 }}>
-                                    Save <img
-                                    key={index}
-                                    className={"save-actions-icons"}
-                                    src={SaveIcon}
-                                    alt={"save-icon" + index.toString()}
+                                    <span>Save</span> 
+                                    <img
+                                        key={index}
+                                        className={"save-actions-icons"}
+                                        src={SaveIcon}
+                                        alt={"save-icon" + index.toString()}
                                 />
                                 </button>
                             ) : null}
                             <button onClick={() => {
                                 handleDownloadFile(file)
                             }}>
-                                Download <img
-                                key={index}
-                                className={"save-actions-icons"}
+                                <span>Download</span>
+                                <img
+                                    key={index}
+                                    className={"save-actions-icons"}
                                     src={DownloadIcon}
                                     alt={"download-icon" + index.toString()}
                                 />

@@ -169,4 +169,23 @@
     padding: 0.5rem 0.75rem;
 }
 
-
+@media (max-width: 767px) {
+    .comment-box {
+        padding: 0.5rem;
+        width: 16rem;
+    }
+    .comment-box-header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .toggle-button {
+        padding: 0.1rem;
+        margin-right: 1rem;
+        font-size: 0.75rem;
+        border-radius: revert;
+        width: auto;
+    }
+}
