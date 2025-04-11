@@ -105,6 +105,7 @@ const FileComponent = () => {
 
             console.log("Server response:", response);
             showAlert(response.status, response.data.message);
+            navigate(`/projects/${response.data.file.ID}`, { replace: true });
 
         } catch (error) {
             console.error("Ошибка при запросе:", error);

@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import "../css/UserProjectsStyles.css";
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import AuthService from "../services/AuthService";
 import Preloader from "./Preloader";
 import ProfileIcon from "../assets/images/user-icon.png";
@@ -8,6 +8,8 @@ import InfoCommentIcon from "../assets/images/info-comment-icon.png"
 import WarningCommentIcon from "../assets/images/warning-comment-icon.png"
 import ErrorCommentIcon from "../assets/images/error-comment-icon.png"
 import FileIcon from "../assets/images/file-icon.png";
+import SearchProjectIcon from "../assets/images/search-icon.png"
+import SortProjectsIcon from "../assets/images/sort-icon.png"
 import { useAlert } from "../services/AlertContext";
 import axios from "axios";
 
@@ -20,7 +22,27 @@ const UserProjectsComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
-    const { showAlert } = useAlert();
+    const { showAlert, showDialog } = useAlert();
+
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+    const [currentProject, setCurrentProject] = useState(null);
+    const [editedProjectName, setEditedProjectName] = useState('');
+
+    const [sortDropdownVisible, setSortDropdownVisible] = useState(false)
+    const sortMethods = [
+        { value: "newest", label: "Newest first" },
+        { value: "oldest", label: "Oldest first" },
+        { value: "name_asc", label: "Name (A-Z)" },
+        { value: "name_desc", label: "Name (Z-A)" }
+    ];
+
+    const [dropdownVisible, setDropdownVisible] = useState(null);
+    const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
+
+    const searchParams = useSearchParams()
+    const [searchPattern, setSearchPattern] = useState(searchParams[0].get("search") || "");
+    const [sortPattern, setSortPattern] = useState(searchParams[0].get("sort") || "newest");
+
 
     const handleTabChange = (tab) => {
         setMainContent(tab);
@@ -32,6 +54,130 @@ const UserProjectsComponent = () => {
         }
     };
 
+    const handleOptionsClick = (event, projectId) => {
+        event.stopPropagation();
+        setSortDropdownVisible(false)
+        const buttonElement = event.currentTarget;
+        const rect = buttonElement.getBoundingClientRect();
+        setDropdownPosition({
+            x: rect.left,
+            y: rect.bottom + window.scrollY
+        });
+        setDropdownVisible(dropdownVisible === projectId ? null : projectId);
+    };
+
+    const handleSaveRename = async () => {
+        try {
+            const accessToken = localStorage.getItem("accessToken");
+            await axios.put(
+                `http://localhost:8080/api/edit/file_name`,
+                {
+                    FileId: currentProject.ID,
+                    NewFileName: editedProjectName
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            const updatedProjects = projects.map(project =>
+                project.ID === currentProject.ID
+                    ? { ...project, filename: editedProjectName }
+                    : project
+            );
+            setProjects(updatedProjects);
+            setIsRenameModalOpen(false);
+        } catch (error) {
+            console.error("Ошибка при переименовании проекта:", error);
+            if (error.response?.status === 401) {
+                try {
+                    await AuthService.refreshToken();
+                    await handleSaveRename()
+                } catch (refreshError) {
+                    console.error("Ошибка при обновлении токена:", refreshError);
+
+                    navigate("/", {
+                        state: {
+                            error: {
+                                status: refreshError.status || 500,
+                                message: refreshError.message || "Authorization error",
+                            },
+                        },
+                    });
+                }
+            } else {
+                showAlert(
+                    error.status || 500,
+                    error.message || "Undefined error occurred"
+                );
+            }
+        }
+    };
+
+
+    const handleDeleteFile = (id) => {
+        showDialog(
+            {
+                message: "Are you sure you want to delete this project?",
+                confirmText: "Delete",
+                cancelText: "Cancel"
+            },
+            async () => {
+                try {
+                    const accessToken = localStorage.getItem("accessToken");
+                    await axios.delete(
+                        `http://localhost:8080/api/delete/file?id=${id}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`,
+                            },
+                        }
+                    );
+
+                    setProjects(projects.filter(p => p.ID !== id));
+                    setCurrentProject(null);
+                    showAlert(200, "Project deleted successfully");
+                } catch (error) {
+                    console.error("Ошибка при удалении проекта:", error);
+                    if (error.response?.status === 401) {
+                        try {
+                            await AuthService.refreshToken();
+                            await handleDeleteFile(id)
+                        } catch (refreshError) {
+                            console.error("Ошибка при обновлении токена:", refreshError);
+
+                            navigate("/", {
+                                state: {
+                                    error: {
+                                        status: refreshError.status || 500,
+                                        message: refreshError.message || "Authorization error",
+                                    },
+                                },
+                            });
+                        }
+                    } else {
+                        showAlert(
+                            error.status || 500,
+                            error.message || "Undefined error occurred"
+                        );
+                    }
+                }
+            });
+    };
+
+    useEffect(() => {
+        const handleClickOutside = () => {
+            setDropdownVisible(null);
+            setSortDropdownVisible(false)
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
 
     const fetchProjects = async (url) => {
         try {
@@ -110,7 +256,7 @@ const UserProjectsComponent = () => {
     }
 
     useEffect(() => {
-        const apiProjectsUrl = "http://localhost:8080/api/get/files";
+        const apiProjectsUrl = `http://localhost:8080/api/get/files?search=${searchPattern}&sort=${sortPattern}`;
         const apiCommentsUrl = "http://localhost:8080/api/get/comments";
         if (location.pathname === "/projects/comments") {
             setMainContent("comments");
@@ -120,6 +266,21 @@ const UserProjectsComponent = () => {
             fetchProjects(apiProjectsUrl);
         }
     }, [location]);
+
+    const handleParamsChange = (sort, search) =>{
+        const params = new URLSearchParams();
+
+        if (sort && sort !== "newest") {
+            params.set("sort", sort);
+        }
+
+        if (search) {
+            params.set("search", search);
+        }
+
+        const queryString = params.toString();
+        navigate(`/projects${queryString ? `?${queryString}` : ""}`)
+    }
 
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -245,7 +406,7 @@ const UserProjectsComponent = () => {
                 </div>
             </header>
             <main>
-                <div className={"projects-container"}>
+                <div className={"main-content-wrapper"}>
                     <div className={"switch-content-bar"}>
                         <div className={`switcher-button-container ${mainContent === "projects" ? 'active' : '' }`}>
                             <button className={"switch-button"} onClick={() => {
@@ -263,27 +424,122 @@ const UserProjectsComponent = () => {
                         </div>
                     </div>
                     {mainContent === "projects" ? (
-                        projects?.length > 0 ? (
-                                <div className="projects-grid">
-                                    {projects.map((project, index) => (
-                                        <div key={project.ID} className="project-card">
-                                            <div>
-                                                <img className={"projects-file-icons"} src={FileIcon}
-                                                     alt={"file-icon" + project.ID.toString()}/>
-                                            </div>
-                                            <h3 title={project.filename}>{project.filename.length > 15 ? (project.filename.slice(0, 15) + "...") : (project.filename)}</h3>
-                                            <p>{new Date(project.CreatedAt).toLocaleDateString()}</p>
+                        <div className={"projects-container"}>
+                            <div className={"projects-actions-container"}>
+                                <div className={"search-bar-container"}>
+                                    <div className={"search-bar"}>
+                                        <input
+                                            className={"search-bar-input"}
+                                            placeholder={"Enter file name..."}
+                                            value={searchPattern}
+                                            onChange={(e) => {
+                                                setSearchPattern(e.target.value);
+                                            }}
+                                        />
+                                        <div className="clear-search-container">
+                                            {(searchPattern || searchParams[0].get("search")) && (
+                                                <svg
+                                                    className="clear-search-icon"
+                                                    viewBox="0 0 24 24"
+                                                    onClick={() => {
+                                                        setSearchPattern("")
+                                                        handleParamsChange(sortPattern, "")
+                                                    }}
+                                                >
+                                                    <path
+                                                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                                                        fill="currentColor"
+                                                    />
+                                                </svg>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        className={"search-project-button"}
+                                        onClick={() => {
+                                            handleParamsChange(sortPattern, searchPattern)
+                                        }}
+                                    >
+                                    <img src={SearchProjectIcon} alt={"search"}/>
+                                    </button>
+                                </div>
+                                <button
+                                    className={"sort-projects-button"}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setDropdownVisible(null)
+                                        setSortDropdownVisible(!sortDropdownVisible)
+                                    }}
+                                >
+                                    Sort
+                                    <img src={SortProjectsIcon} alt={"sort"}/>
+                                </button>
+                                {sortDropdownVisible && (
+                                    <div
+                                        className="sort-dropdown-menu"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {sortMethods.map((method) => (
+                                            <button
+                                                key={method.value}
+                                                className={`sort-dropdown-item ${sortPattern === method.value ? 'active' : ''}`}
+                                                onClick={() => {
+                                                    setSortPattern(method.value);
+                                                    setSortDropdownVisible(false)
+                                                    handleParamsChange(method.value, searchPattern)
+                                                }}
+                                            >
+                                                {method.label}
+                                                {sortPattern === method.value && (
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            {projects?.length > 0 ? (
+                            <div className="projects-grid">
+                                {projects.map((project, index) => (
+                                    <div key={project.ID} className="project-card">
+                                        <div>
+                                            <img className={"projects-file-icons"} src={FileIcon}
+                                                 alt={"file-icon" + project.ID.toString()}/>
+                                        </div>
+                                        <h3 title={project.filename}>{project.filename.length > 15 ? (project.filename.slice(0, 15) + "...") : (project.filename)}</h3>
+                                        <p>{new Date(project.CreatedAt).toLocaleDateString()}</p>
+                                        <div className={"project-card-actions"}>
                                             <button
                                                 className={"projects-file-buttons"}
                                                 onClick={() => navigate(`/projects/${project.ID}`)}
                                             >
                                                 OPEN
                                             </button>
+                                            <button
+                                                className={"project-card-options-button"}
+                                                onClick={(e) => handleOptionsClick(e, project.ID)}
+                                            >
+                                                <svg
+                                                    width="20"
+                                                    height="20"
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                >
+                                                    <circle cx="13" cy="5" r="2"/>
+                                                    <circle cx="13" cy="12" r="2"/>
+                                                    <circle cx="13" cy="19" r="2"/>
+                                                </svg>
+                                            </button>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
+                            </div>
                             ) : (isLoading ? (<Preloader/>) : (
-                                <p className={"zero-content-placeholder"}>You don't have any saved projects yet</p>))
+                            <p className={"zero-content-placeholder"}>You don't have any saved projects yet</p>))}
+                        </div>
                     ) : (
                         comments?.length > 0 ? (
                             <div className="comments-grid-container">
@@ -332,7 +588,74 @@ const UserProjectsComponent = () => {
                             <p className={"zero-content-placeholder"}>You don't have any comments yet</p>))
                     )}
                 </div>
+                {dropdownVisible && (
+                    <div
+                        className={"project-options-dropdown-menu"}
+                        style={{
+                            left: `calc(${dropdownPosition.x}px + 1rem)`,
+                            top: `calc(${dropdownPosition.y}px + 0.25rem)`
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            className="dropdown-item"
+                            onClick={() => {
+                                const project = projects.find(p => p.ID === dropdownVisible);
+                                setCurrentProject(project);
+                                setEditedProjectName(project.filename);
+                                setIsRenameModalOpen(true);
+                                setDropdownVisible(null);
+                            }}
+                        >
+                            Rename
+                        </button>
+                        <button
+                            className="dropdown-item"
+                            onClick={() => {
+                                const project = projects.find(p => p.ID === dropdownVisible);
+                                setCurrentProject(project);
+                                handleDeleteFile(project.ID);
+                                setDropdownVisible(null)
+                            }}
+                        >
+                            Delete
+                        </button>
+                    </div>
+                )}
             </main>
+            {isRenameModalOpen && (
+                <div className="modal-overlay">
+                    <div className="rename-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Rename Project</h3>
+                        <input
+                            type="text"
+                            value={editedProjectName}
+                            onChange={(e) => setEditedProjectName(e.target.value)}
+                            className="modal-rename-input"
+                            autoFocus
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSaveRename();
+                                }
+                            }}
+                        />
+                        <div className="modal-actions">
+                            <button
+                                className="modal-cancel-button"
+                                onClick={() => setIsRenameModalOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="modal-save-button"
+                                onClick={handleSaveRename}
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     );
