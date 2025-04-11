@@ -24,11 +24,36 @@ func GetUserFiles(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
+
+	searchQuery := c.Query("search") // ?search=термин
+	sortOrder := c.Query("sort")     // ?sort=newest или ?sort=oldest
+
+	query := db.DB.Where("user_id = ?", userId)
+
+	if searchQuery != "" {
+		searchPattern := "%" + searchQuery + "%"
+		query = query.Where("(filename ILIKE '%' || ? || '%' OR SIMILARITY(filename, ?) > 0.2)", searchPattern, searchQuery)
+	}
+
+	switch sortOrder {
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "name_asc":
+		query = query.Order("filename ASC")
+	case "name_desc":
+		query = query.Order("filename DESC")
+	default:
+		query = query.Order("created_at DESC")
+	}
+
 	var userFiles []models.MarkdownFile
-	if err := db.DB.Where("user_id = ?", userId).Find(&userFiles).Error; err != nil {
+	if err := query.Find(&userFiles).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch user files"})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"files": userFiles,
 	})

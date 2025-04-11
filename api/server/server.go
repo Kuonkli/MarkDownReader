@@ -53,6 +53,7 @@ func (s *APIServer) Run() error {
 		del := api.Group("/delete")
 		{
 			del.DELETE("/comment", handlers.DeleteCommentHandler)
+			del.DELETE("/file", handlers.DeleteFileHandler)
 		}
 	}
 
